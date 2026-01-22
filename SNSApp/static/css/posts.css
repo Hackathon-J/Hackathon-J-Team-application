@@ -3,6 +3,8 @@ body{
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    gap: 36px;
+    margin-top: 0px;
 }
 header{
     display: flex;
