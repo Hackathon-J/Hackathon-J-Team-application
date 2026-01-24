@@ -17,7 +17,7 @@ class User(db.Model):
         return f'<User {self.username}>'
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password, method='pbkdf2:sha256')
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -60,6 +60,7 @@ def signup():
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
+        print(f"新規登録成功: ユーザー '{username}' がデータベースに追加されました。")
 
         return redirect(url_for('login'))
     
