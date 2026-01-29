@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="../static/css/home.css"> <!--Flask連携前確認用の為、この行確認後削除-->
+    <title>RareTECH学習サポートアプリ(仮)</title>
+</head>
+<body>
+    <header>
+        <!-- アプリ上部のヘッダーを表示 -->
+        <!-- いずれもaタグにしてリンクにする予定？ -->
+        <!--　左上にアプリ名 -->
+        <h3>RareTECH学習サポートアプリ(仮)</h3>
+        <!-- 右上にナビゲーション-->
+        <nav>
+            <a>ホーム</a>
+            <a>プロフィール</a>
+            <a>ログアウト</a>
+        </nav>
+    </header>
+    <main>
+        <!-- {% block content %}
+        {% if posts and posts | length > 0 %} -->
+        <div class="post-list">
+            <!-- {% for post in posts %} -->
+            <div class="post-card">
+                <!-- Flask連携時使用　<img src="{{ url_for('static' , filename='icon/profile_icon.png') }}"> -->
+                <!-- Flask使用時削除 --><img class="profile-img" src="../static/css/icon/profile_icon.png" alt="写真設定なし" title="プロフィール初期画像" >
+                <div class="post-content">
+                    <div class="post-header">
+                        <div class="post-user">
+                            {{ post.user_name}}
+                        </div>
+                        <div class="post-time">
+                            {{ post.created_at }}
+                        </div>
+                    </div>
+                    <div class="post-body">
+                    {{ post.content }}
+                    </div>
+                </div>
+            </div>
+            <!-- {endfor }-->
+        </div>
+        <!-- {% else %}
+        <div class="empty">
+            <p>投稿がありません。</p>
+        <div>
+        {% endif %} -->
+        <!-- {% endblock %} -->
+        <!-- <form action="{{ url_for('post_page') }}" method="post"> -->
+            <button class="post-button" type="submit">投稿を作成</button>
+        </form>
+    </main>
+    
+</body>
+</html>
