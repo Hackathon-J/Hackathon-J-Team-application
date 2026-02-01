@@ -1,0 +1,28 @@
+/* body全体を内容の量に関係なく、PCやスマホの画面いっぱいの高さにする。*/
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    gap: 36px;
+    margin-top: 0px;
+}
+/* 画面内のヘッダーの設定、横並びにして、背景は青、文字は白色、配置は両端に、10px余白 */
+header{
+    display: flex;
+    background-color: rgb(23, 117, 194);
+    color: white;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+#submitbutton{
+    display: flex;
+    justify-self: center;
+}

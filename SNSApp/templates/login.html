@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="../static/css/login.css"> <!--Flask連携前確認用の為、この行確認後削除-->
+    <title>ログイン-RareTECH学習サポートアプリ(仮)</title>
+</head>
+<body>
+    <header>
+        <!-- アプリ上部のヘッダーを表示 -->
+        <!-- いずれもaタグにしてリンクにする予定？ -->
+        <!--　左上にアプリ名 -->
+        <h3>RareTECH学習サポートアプリ(仮)</h3>
+    </header>
+    <main>
+        <form action="/submit" method="POST">
+            <h3>ログイン</h3>
+            <div>
+                <label for="username">ユーザー名</label><br>
+                <input type="text" id="username" name="username">
+            </div>
+            <div>
+                <label for="password">パスワード</label><br>
+                <input type="password" id="password" name="password">
+            </div>
+            <div id="submitbutton">
+                <input type="submit" value="ログイン">
+            </div>
+        </form>
+        <a>新規登録はこちら</a>
+    </main>
+    
+</body>
+</html>
