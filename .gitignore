@@ -1,1 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
 .env
+venv/
+instance/
+.DS_Store
+SNSApp/.DS_Store
