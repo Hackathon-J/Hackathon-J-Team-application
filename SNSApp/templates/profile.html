@@ -15,9 +15,9 @@
         <h3>RareTECH学習サポートアプリ(仮)</h3>
         <!-- 右上にナビゲーション-->
         <nav>
-            <a>ホーム</a>
-            <a>プロフィール</a>
-            <a>ログアウト</a>
+             <a href="{{ url_for('home') }}">ホーム</a>
+            <a href="{{ url_for('profile') }}">プロフィール</a>
+            <a href="{{ url_for('logout') }}">ログアウト</a>
         </nav>
     </header>
     <main>

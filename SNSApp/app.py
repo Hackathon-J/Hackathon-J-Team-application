@@ -50,6 +50,10 @@ def submit():
 
     user = User.query.filter_by(username=username).first()
 
+    #追加空チェック
+    if not username or not password:
+        return redirect(url_for('login'))
+
     if user and user.check_password(password):
     #追加
         session['user_id'] = user.id
