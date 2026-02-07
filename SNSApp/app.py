@@ -112,6 +112,7 @@ def home():
     return render_template('home.html', posts=posts)
 
 
+# ここを修正してもらえると投稿記入欄に飛べる？
 @app.route('/posts', methods=['GET', 'POST'])
 def posts():
     user_id = session.get('user_id')

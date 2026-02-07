@@ -22,22 +22,39 @@ nav{
 
 main{
     display: flex;
-    flex-grow: 1;
+    flex-grow: 1;           /* flex要素の余白部分一杯使うための設定 */
     flex-direction: column;
-    justify-content: flex-end;
     align-items: center;
     
 }
 
 .post{
-    display: flex;
-}
-
-#input_post{
-    height: 100px;
+    position: relative;     /* postクラスを親要素にする */
+    width: 80%;             /* 画面幅の80%に設定 */
+    padding: 10px;
+    background-color:rgb(168, 181, 194);
 }
 
 #input_post_button{
-    align-self: flex-end;
+    position: absolute;     /* 親要素を基準に自由に動ける設定 */
+    top: 50px;              /* トップから50pxの位置 */
+    right: 10px;            /* 右端から10pxの位置 */
 }
+
+/* 学習時間記入欄の時間要素の設定 */
+#studytime_hour{
+    width: 30px;
+}
+
+/* 学習時間記入欄の分要素の設定 */
+#studytime_minutes{
+    width: 30px;
+}
+
+#post_body{
+    height: 300px;      /* 記入欄の縦幅をたくさん確保 */
+    width: 100%;        /* 親の幅いっぱいに広げる */
+}
+
+
 
