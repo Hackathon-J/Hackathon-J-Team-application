@@ -6,7 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 # SQLAlchemyのrelationshipはdb.relationshipを使うのがいいらしい。
 from sqlalchemy.orm import joinedload
-from functools import warps
+from functools import wraps #warpsをwrapsに変更byおーちゃん
+import re #追加byおーちゃん
 
 # 定数定義
 EMAIL_PATTERN = EMAIL_PATTERN = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
@@ -21,16 +22,16 @@ app.permanent_session_lifetime = timedelta(days=SESSION_DAYS)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 # SQLAlchemyのイベント通知無効化
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# SQLAlchemyオブジェクト生成
-db = SQLAlchemy(app)
+
 
 #コンテナを再起動するたびにセッションが無効かされるので別方法を取る。
 #app.config['SECRET_KEY'] = os.urandom(24)
-
-# SECRET_KEYを.envに作成する。
+# SECRET_KEYを.envに作成する。 line30-35おーちゃん追加
 load_dotenv()
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-
+if app.config['SECRET_KEY'] is None:
+    raise RuntimeError("SECRET_KEYが設定されていません。'.env'ファイルを確認してください。")
+db = SQLAlchemy(app)
 
 # Userモデル作成
 class User(db.Model):
@@ -60,7 +61,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utdnow, onupdate=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
@@ -114,6 +115,7 @@ def submit():
     if user and user.check_password(password):
         #セッションにuser_idを追加
         session['user_id'] = user.id
+        session.permanent = True #おーちゃん追加
         return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
@@ -123,8 +125,30 @@ def submit():
 @app.route('/signup', methods=['GET'])
 @not_logged_required
 def signup_view():
-    return render_template(sighup.html)
+    return render_template('signup.html') 
+    #sighup.htmlを'signup.html'に修正byおーちゃん
 
+#サインアップ処理(POST) #GETの下に持ってきましたbyおーちゃん
+@app.route('/signup', methods=['POST'])
+def signup_post():
+    username = request.form['username']
+    mailaddress = request.form['mailaddress']
+    password = request.form['password']
+    password_confirmation = request.form['password_confirmation']
+    if not username or not mailaddress or not password or not password_confirmation:
+        return redirect(url_for('signup_view'))
+    existing_user = User.query.filter_by(username=username).first()
+    if existing_user:
+        return redirect(url_for('signup_view'))
+    if password != password_confirmation:
+        new_user = User(username=username, mailaddress=mailaddress)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+        session['user_id'] = new_user.id
+        session.permanent = True #line159-160おーちゃん追加
+    return redirect(url_for('home'))
+  
 #ログアウト処理
 @app.route('/logout')
 def logout():
@@ -132,47 +156,6 @@ def logout():
     session.pop('user_id', None)
     return redirect(url_for('login'))
 
-#サインアップ処理(POST)
-@app.route('/signup', methods = ['POST'])
-def signup():
-    username = request.form['username']
-    mailaddress = request.form['mailaddress'] 
-    password = request.form['password']
-    password_confirmation = request.form['password_confirmation']
-
-    # 空チェック
-    if not username or not mailaddress or not password or not password_confirmation:
-        #flash("空のフォームがあります", 'error')
-        return redirect(url_for('signup'))
-
-    # メールアドレス型式チェック
-    if not re.match(EMAIL_PATTERN, mailaddress):
-        #flash("正しいメールアドレスの型式ではありません", 'error')
-        return redirect(url_for('signup'))
-
-    # 既存ユーザー確認
-    existing_user = User.query.filter_by(username=username).first()
-    if existing_user:
-        #flash("既に登録されているユーザー名です", 'error')
-        return redirect(url_for('signup'))
-
-    # 既存メールアドレス確認
-    existing_mailadress = User.query.filter_by(mailaddress=mailaddress).first()
-        #flash("既に登録されているメールアドレスです", 'error')
-        return redirect(url_for('signup'))
-
-    # パスワード一致確認
-    if password != password_confirmation:
-        #flash("二つのパスワードの値が異なっています", 'error')
-        return redirect(url_for('signup'))
-
-    new_user = User(username=username)
-    new_user.set_password(password)
-    db.session.add(new_user)
-    db.session.commit()
-    print(f"新規登録成功: ユーザー '{username}' がデータベースに追加されました。")
-
-    return redirect(url_for('home'))
 
 # 投稿一覧画面表示
 @app.route('/home')
@@ -201,7 +184,8 @@ def posts():
 @app.route('/profile')
 @login_required
 def profile():
-    user = User.query.get(user_id)
+    user_id = session.get('user_id') #おーちゃん追加
+    user = User.query.get(user_id) 
     if not user:
             return redirect(url_for('login'))
     return render_template('profile.html' , post=user)
@@ -209,7 +193,7 @@ def profile():
 # 他人プロフィール画面表示
 @app.route('/others_profile/<int:user_id>')
 def others_profile(user_id):
-    user = User.query.get(user_id)
+    user = User.query.get(user_id) 
     if not user:
             return redirect(url_for('home'))
     return render_template('others_profile.html' , post=user)
