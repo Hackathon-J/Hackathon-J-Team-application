@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <title>404エラー</title>
+</head>
+<body>
+  <div class="error-wrapper">
+    <div class="error-description">
+      <h1 class="error-num">500</h1>
+      <p>エラーが発生しました。<br>管理者にお問い合わせください。</p>
+      <a href="{{ url_for('/') }}">ホームに戻る</a>
+    </div>
+  </div>
+</body>
+</html>
+
