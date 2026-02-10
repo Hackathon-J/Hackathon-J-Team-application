@@ -63,9 +63,26 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    learning_time = db.Column(db.Integer)#追加おーちゃんon2/9
 
     def __repr__(self):
         return f'<Post {self.id} by {self.user_id}>'
+    #分を「時間と分」に変換するプロパティの追加　line71-追加byおーちゃんon2/10
+    @property
+    def formatted_learning_time(self):
+        if self.learning_time is None:
+            return "未記録"
+
+        hours = self.learning_time // 60
+        minutes = self.learning_time % 60
+        if hours > 0 and minutes > 0:
+            return f"{hours}時間{minutes}分"
+        elif hours > 0:
+            return f"{hours}時間"
+        elif minutes > 0:
+            return f"{minutes}分"
+        else:
+            return "0分"
 
 #ログイン「有」確認用デコレータ
 def login_required(f):
@@ -156,7 +173,6 @@ def logout():
     session.pop('user_id', None)
     return redirect(url_for('login'))
 
-
 # 投稿一覧画面表示
 @app.route('/home')
 @login_required
@@ -173,12 +189,18 @@ def posts():
     
     if request.method == 'POST':
         content = request.form['post_body']
+        learning_time = request.form.get('learning_time', 0) #追加おーちゃんon2/9
         if content:
-            new_post = Post(content=content, user_id=user_id)
+            new_post = Post(content=content, user_id=user_id, learning_time=learning_time) #追加おーちゃんon2/9
             db.session.add(new_post)
             db.session.commit()
             return redirect(url_for('home'))
     return render_template('posts.html')
+
+# 投稿詳細画面表示　追加おーちゃんon2/9
+@app.route('/post/<int:post_id>') #URLから投稿IDを受け取る byおーちゃん2/9
+def post_detail():
+    post_detail = Post.query.get(post_id)
 
 # 本人プロフィール画面表示
 @app.route('/profile')
