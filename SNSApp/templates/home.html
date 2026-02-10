@@ -33,9 +33,12 @@
                         <div class="post-time">
                             {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}
                         </div>
+                        <div class="study-time">
+                            {{ post.勉強時間(仮) }}
+                        </div>
                     </div>
                     <div class="post-body">
-                    {{ post.content }}
+                        {{ post.content }}
                     </div>
                 </div>
             </div>
@@ -49,6 +52,7 @@
         <form action="{{ url_for('posts') }}" method="POST">
             <button class="post-button" type="submit">投稿を作成</button>  
         </form>
+        <!--<a href="{{ url_for('post_page') }}" class="post-button">投稿を作成</a> aタグの方がいい？-->
     </main>
     
 </body>
