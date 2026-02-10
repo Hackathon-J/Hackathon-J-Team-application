@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}">
+    <!-- 確認用、本番時削除 --><link rel="stylesheet" href="../static/css/error.css">
     <title>RareTECH学習サポートアプリ(仮)</title>
 </head>
 <body>
+  <header>
+    <!--　左上にアプリ名 -->
+    <h3>RareTECH学習サポートアプリ(仮)</h3>
+  </header>
+
   <div class="error-wrapper">
     <div class="error-description">
       <h1 class="error-num">400</h1>
