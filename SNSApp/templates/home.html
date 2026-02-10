@@ -49,7 +49,7 @@
             <p>投稿がありません。</p>
         </div>
         {% endif %}
-        <form action="{{ url_for('posts') }}" method="POST">
+        <form action="{{ url_for('posts') }}" method="GET">
             <button class="post-button" type="submit">投稿を作成</button>  
         </form>
         <!--<a href="{{ url_for('post_page') }}" class="post-button">投稿を作成</a> aタグの方がいい？-->
