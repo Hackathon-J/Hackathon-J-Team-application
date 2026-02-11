@@ -33,15 +33,12 @@
                         <div class="post-time">
                             {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}<!-- おーちゃん日本時間になるように変更2/11-->
                         </div>
-<<<<<<< Updated upstream
-=======
                         <div class="study-time">
                             学習時間: {{ post.formatted_learning_time }}<!-- おーちゃん変更2/11-->
                         </div>
->>>>>>> Stashed changes
                     </div>
                     <div class="post-body">
-                    {{ post.content }}
+                        {{ post.content }}
                     </div>
                 </div>
             </div>
@@ -55,10 +52,7 @@
         <form action="{{ url_for('posts') }}" method="GET">
             <button class="post-button" type="submit">投稿を作成</button>  
         </form>
-<<<<<<< Updated upstream
-=======
         <!--<a href="{{ url_for('posts') }}" class="post-button">投稿を作成</a> aタグの方がいい？--> <!--posts_pageをpostsに変更byおーちゃん2/11-->
->>>>>>> Stashed changes
     </main>
     
 </body>

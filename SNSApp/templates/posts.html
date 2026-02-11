@@ -21,10 +21,6 @@
     </header>
     <main>
         <!-- 投稿欄の作成　-->
-<<<<<<< Updated upstream
-        <form class="post">
-            <textarea id="input_post" name="post_body"  placeholder="今日の学習内容を記入してください" style="overflow-y: scroll;"></textarea>
-=======
         <!-- 内容記入欄 -->
         <form class="post" action="{{ url_for('posts') }}" method="POST"><!-- app.pyのpostsルートにデータを送るためaction属性とmethod属性を追加byおーちゃん2/11-->
             <div class="post_header">
@@ -44,7 +40,6 @@
             
 
             <textarea id="post_body" name="post_body"  placeholder="今週の学習内容を記入してください" style="overflow-y: scroll;"></textarea>
->>>>>>> Stashed changes
             <div id="input_post_button">
                 <input type="submit" value="送信">
             </div>
