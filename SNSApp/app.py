@@ -60,6 +60,7 @@ class User(db.Model):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
+<<<<<<< Updated upstream
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -72,6 +73,35 @@ class Post(db.Model):
     def formatted_learning_time(self):
         if self.learning_time is None:
             return "未記録"
+=======
+    created_at = db.Column(db.DateTime, nullable=False,default=datetime.utcnow)
+    @property #line69〜73日本時間を表示するため追加byおーちゃん2/11
+    def created_at_jst(self):
+        if self.created_at:
+            return self.created_at + timedelta(hours=9 )
+        return None
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    learning_time = db.Column(db.Integer) #追加byおーちゃん2/10
+
+    def __repr__(self):
+        return f'<Post {self.id} by {self.user_id}>'
+    @property #line77〜91追加byおーちゃん2/10
+    def formatted_learning_time(self):
+        if self.learning_time is None:
+            return "未記録"
+        
+        hours = self.learning_time // 60
+        minutes = self.learning_time % 60
+        if hours > 0 and minutes > 0:
+            return f"{hours}時間{minutes}分"
+        elif hours > 0:
+            return f"{hours}時間"
+        elif minutes > 0:
+            return f"{minutes}分"
+        else:
+            return "0分"
+>>>>>>> Stashed changes
 
         hours = self.learning_time // 60
         minutes = self.learning_time % 60
@@ -158,12 +188,22 @@ def signup_post():
     if existing_user:
         return redirect(url_for('signup_view'))
     if password != password_confirmation:
+<<<<<<< Updated upstream
         new_user = User(username=username, mailaddress=mailaddress)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
         session['user_id'] = new_user.id
         session.permanent = True #line159-160おーちゃん追加
+=======
+        return redirect(url_for('signup_view'))
+    new_user = User(username=username, mailaddress=mailaddress)
+    new_user.set_password(password)
+    db.session.add(new_user)
+    db.session.commit()
+    session['user_id'] = new_user.id
+    session.permanent = True  # line159-160おーちゃん追加
+>>>>>>> Stashed changes
     return redirect(url_for('home'))
   
 #ログアウト処理
@@ -181,17 +221,39 @@ def home():
     posts = Post.query.options(joinedload(Post.author)).order_by(Post.created_at.desc()).all()
     return render_template('home.html', posts=posts)
 
+<<<<<<< Updated upstream
 @app.route('/posts', methods = ['GET', 'POST'])
+=======
+
+# ここを修正してもらえると投稿記入欄に飛べる？
+@app.route('/posts', methods=['GET', 'POST'])
+@login_required #おーちゃん追加2/11
+>>>>>>> Stashed changes
 def posts():
     user_id = session.get('user_id')
     if not user_id:
         return redirect(url_for('login'))
+<<<<<<< Updated upstream
     
     if request.method == 'POST':
         content = request.form['post_body']
         learning_time = request.form.get('learning_time', 0) #追加おーちゃんon2/9
         if content:
             new_post = Post(content=content, user_id=user_id, learning_time=learning_time) #追加おーちゃんon2/9
+=======
+    if request.method == 'POST':
+        content = request.form['post_body']
+#line226-234おーちゃん追加2/11
+        try:
+            studytime_hour = int(request.form.get('studytime_hour', 0)) 
+            studytime_minutes = int(request.form.get('studytime_minutes', 0))    
+        except ValueError:
+            studytime_hour = 0 
+            studytime_minutes = 0
+        total_learning_minutes = (studytime_hour * 60) + studytime_minutes
+        if content:
+            new_post = Post(content=content, user_id=user_id, learning_time = total_learning_minutes)#おーちゃんlearning_time追加2/11
+>>>>>>> Stashed changes
             db.session.add(new_post)
             db.session.commit()
             return redirect(url_for('home'))
