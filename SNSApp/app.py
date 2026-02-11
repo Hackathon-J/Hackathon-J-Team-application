@@ -18,8 +18,14 @@ app = Flask(__name__)
 
 # セッション設定
 app.permanent_session_lifetime = timedelta(days=SESSION_DAYS)
-# SQLiteデータベースの設定
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+# SQLデータベースの指定
+# SQLiteを指定⇒MYSQLの指定が必要だと思うので変更
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    f"mysql+pymysql://{os.getenv('DB_USER')}:"
+    f"{os.getenv('DB_PASSWORD')}@db:3306/"
+    f"{os.getenv('DB_DATABASE')}"
+)
 # SQLAlchemyのイベント通知無効化
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
