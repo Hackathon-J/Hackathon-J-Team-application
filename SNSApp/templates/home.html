@@ -24,14 +24,18 @@
         <div class="post-list">
             {% for post in posts %}
             <div class="post-card">
-                <img src="{{ url_for('static' , filename='icon/profile_icon.png') }}" class="profile-img">
+                <a href="{{ url_for('post_detail') }}" class="post-detail-link"></a>
+                <a href="{{ url_for('profile') }}" class="profile-link"><img src="{{ url_for('static' , filename='icon/profile_icon.png') }}" class="profile-img"></a>
                 <div class="post-content">
                     <div class="post-header">
                         <div class="post-user">
                             {{ post.author.username }}
                         </div>
                         <div class="post-time">
-                            {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}
+                            {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}<!-- おーちゃん日本時間になるように変更2/11-->
+                        </div>
+                        <div class="study-time">
+                            学習時間: {{ post.formatted_learning_time }}<!-- おーちゃん変更2/11-->
                         </div>
                     </div>
                     <div class="post-body">
@@ -46,11 +50,10 @@
             <p>投稿がありません。</p>
         </div>
         {% endif %}
-        <form action="{{ url_for('posts') }}" method="GET">
+        <!-- <form action="{{ url_for('posts') }}" method="GET">
             <button class="post-button" type="submit">投稿を作成</button>  
-        </form>
-        <!-- {# <a href="{{ url_for('post_page') }}" class="post-button">投稿を作成</a> aタグの方がいい？ #}-->
-        <!--<a href="{{ url_for('posts') }}" class="post-button">投稿を作成</a> aタグの方がいい？--> <!--posts_pageをpostsに変更byおーちゃん2/11-->
+        </form>-->
+        <a href="{{ url_for('posts') }}" class="post-button">投稿を作成</a> <!--posts_pageをpostsに変更byおーちゃん2/11-->
     </main>
     
 </body>
