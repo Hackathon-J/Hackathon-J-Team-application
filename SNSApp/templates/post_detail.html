@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="../static/css/post_detail.css"> <!--Flask連携前確認用の為、この行確認後削除-->
+    <title>RareTECH学習サポートアプリ(仮)</title>
+</head>
+<body>
+    <header>
+        <!-- アプリ上部のヘッダーを表示 -->
+        <!-- いずれもaタグにしてリンクにする予定？ -->
+        <!--　左上にアプリ名 -->
+        <h3>RareTECH学習サポートアプリ(仮)</h3>
+        <!-- 右上にナビゲーション-->
+        <nav>
+            <a>ホーム</a>
+            <a>プロフィール</a>
+            <a>ログアウト</a>
+        </nav>
+    </header>
+    <main>
+        <div class="page-title">
+            <h1>投稿詳細</h1>
+        </div>
+        <!-- フラッシュメッセージ 
+        「コメント内容が空です。」ro「コメントの投稿が完了しました。」-->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- 選択した投稿だけを表示(1件だけ) -->
+        <div class="post-card">
+            <!-- Flask連携時使用　<img src="{{ url_for('static' , filename='icon/profile_icon.png') }}"> -->
+            <!-- Flask使用時削除 --><img class="profile-img" src="../static/css/icon/profile_icon.png" alt="写真設定なし" title="プロフィール初期画像" >
+            <div class="post-content">
+                <div class="post-header">
+                    <div class="post-user">
+                        {{ post.user_name}}
+                    </div>
+                    <div class="post-time">
+                        {{ post.created_at }}
+                    </div>
+                    <div class="study-time">
+                        {{ post.勉強時間(仮) }}
+                    </div>
+                </div>
+                <div class="post-body">
+                    {{ post.content }}
+                </div>
+                <!-- 投稿削除機能 -->
+                <div class="post-action">
+                {{% if post.user_id == user_id %}}
+                <form action="/posts/{{ post.id }}/delete" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="post-button-delete" type="submit"
+                    onclick="return confirm('この投稿を削除しますか？');">削除</button>
+                </form>
+                {{% endif %}}
+                </div>
+            </div>
+        </div>
+
+        <!-- コメント一覧 -->
+        <div class="comments-section">
+            {{% if comments and comments | length > 0 %}}
+            <div class="comment-list">
+                {{% for comment in comments %}}
+                <div class="comment-card">
+                    <!-- Flask連携時使用　<img src="{{ url_for('static' , filename='icon/profile_icon.png') }}"> -->
+                    <!-- Flask使用時削除 --><img class="profile-img" src="../static/css/icon/profile_icon.png" alt="写真設定なし" title="プロフィール初期画像" >
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <div class="comment-user">
+                                {{ comment.user_name}}
+                            </div>
+                            <div class="comment-time">
+                                {{ comment.created_at }}
+                            </div>
+                        </div>
+                        <div class="comment-body">
+                            {{ comment.content }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor%}
+            </div>
+            {% else %}
+            <div class="empty">
+                コメントがありません
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- コメント投稿フォーム -->
+        <div class="new-comment">
+            <form class="new-comment-main" action="/posts/{{ post.id }}/comments" method="post">
+                <textarea name="content" placeholder="コメントを入力してください。"></textarea>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token()}}">
+                <div class="new-comment-footer">
+                    <button class="comment-btn" type="submit">
+                        投稿する
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
