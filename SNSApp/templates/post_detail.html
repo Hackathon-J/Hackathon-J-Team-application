@@ -12,7 +12,7 @@
         <!-- アプリ上部のヘッダーを表示 -->
         <!-- いずれもaタグにしてリンクにする予定？ -->
         <!--　左上にアプリ名 -->
-        <h3>RareTECH学習サポートアプリ(仮)</h3>
+        <h1>RareTECH学習サポートアプリ(仮)</h1>
         <!-- 右上にナビゲーション-->
         <nav>
             <a>ホーム</a>
@@ -22,7 +22,7 @@
     </header>
     <main>
         <div class="page-title">
-            <h1>投稿詳細</h1>
+            <h2>投稿詳細</h2>
         </div>
         <!-- フラッシュメッセージ 
         「コメント内容が空です。」ro「コメントの投稿が完了しました。」-->
@@ -101,18 +101,18 @@
             {% endif %}
         </div>
 
-        <!-- コメント投稿フォーム -->
-        <div class="new-comment">
-            <form class="new-comment-main" action="/posts/{{ post.id }}/comments" method="post">
-                <textarea name="content" placeholder="コメントを入力してください。"></textarea>
-                <input type="hidden" name="csrf_token" value="{{ csrf_token()}}">
-                <div class="new-comment-footer">
-                    <button class="comment-btn" type="submit">
-                        投稿する
-                    </button>
-                </div>
-            </form>
-        </div>
+    <!-- コメント投稿フォーム -->
+    <div class="new-comment">
+        <form class="new-comment-main" action="/posts/{{ post.id }}/comments" method="post">
+            <textarea name="content" placeholder="コメントを入力してください。"></textarea>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token()}}">
+            <div class="new-comment-footer">
+                <button class="comment-btn" type="submit">
+                    投稿する
+                </button>
+            </div>
+        </form>
+    </div>
     </main>
 </body>
 </html>
