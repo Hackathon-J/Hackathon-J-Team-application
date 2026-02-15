@@ -48,7 +48,7 @@
                         {{ post.outhor_name }}<!-- おーちゃんuserをauthorに変更2/15-->
                     </div>
                     <div class="post-time">
-                        {{ post.created_at }}
+                        {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}
                     </div>
                     <div class="study-time">
                         学習時間: {{ post.formatted_learning_time }}<!-- おーちゃん変更2/14-->
@@ -83,7 +83,7 @@
                                 {{ comment.author_name }}<!-- おーちゃんuserをauthorに変更2/15-->
                             </div>
                             <div class="comment-time">
-                                {{ comment.created_at }}
+                                {{ comment.created_at_jst.strftime('%Y-%m-%d %H:%M') if comment.created_at_jst else '日時不明' }}
                             </div>
                         </div>
                         <div class="comment-body">

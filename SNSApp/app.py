@@ -92,6 +92,7 @@ class User(BaseModel):
     password_hash = db.Column(db.String(120), nullable=False)
     mailaddress = db.Column(db.String(120), unique=True, nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
+    comments = db.relationship('Comment', backref='author', lazy=True)
     #UserとProfileを1対1に結び付ける設定
     profile = db.relationship('Profile', backref='user', uselist=False)
 
@@ -115,7 +116,9 @@ class Post(BaseModel):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), nullable=False)#おーちゃん変更2/14
     learning_time = db.Column(db.Integer) #追加byおーちゃん2/10
-
+    cascade='all, delete-orphan' #追加byおーちゃん2/15
+    comments = db.relationship('Comment', backref='post', lazy=True, cascade='all, delete-orphan')
+    
     def __repr__(self):
         return f'<Post {self.id} by {self.user_id}>'
     @property #line77〜91追加byおーちゃん2/10
@@ -133,6 +136,15 @@ class Post(BaseModel):
             return f"{minutes}分"
         else:
             return "0分"
+
+#Commentモデル作成 おーちゃん2/15追加
+class Comment(BaseModel):
+    __tablename__ = "comments"
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), nullable=False)  
+    post_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('posts.id'), nullable=False)
+    def __repr__(self):
+        return f'<Comment {self.id} by {self.user_id} on Post {self.post_id}>'
 
 #Profileモデル作成
 class Profile(BaseModel):
@@ -271,15 +283,44 @@ def others_profile(user_id):
         return redirect(url_for('home'))
     return render_template('others_profile.html', post=user)
 
-#投稿詳細画面表示 おーちゃん追加2/14
+#投稿詳細画面表示 おーちゃん追加2/15
 @app.route('/posts/<int:post_id>')#post_idを受け取る
 @login_required
 def post_detail(post_id):
     post = Post.query.options(joinedload(Post.author)).get_or_404(post_id)
-    comments = []
+    comments = Comment.query.filter_by(post_id=post_id).options(joinedload(Comment.author)).order_by(Comment.created_at.asc()).all()
     user_id = session.get('user_id')
     return render_template('post_detail.html', post=post, comments=comments, user_id=user_id)
 
+#コメント投稿用のPOSTルート おーちゃん追加2/15
+@app.route('/posts/<int:post_id>/comments', methods=['POST'])
+@login_required
+def add_comment(post_id):
+    post = Post.query.options(joinedload(Post.author)).get_or_404(post_id)
+    comments = Comment.query.filter_by(post_id=post_id).options(joinedload(Comment.author)).order_by(Comment.created_at.asc()).all()
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+    content = request.form['content']
+    if not content:
+        return redirect(url_for('post_detail', post_id=post_id))
+    new_comment = Comment(content=content, user_id=user_id, post_id=post_id)
+    db.session.add(new_comment)
+    db.session.commit()
+    return redirect(url_for('post_detail', post_id=post_id))
+
+#コメント削除 おーちゃん追加2/15
+@app.route('/posts/<int:post_id>/delete', methods=['POST'])
+@login_required
+def delete_post(post_id):
+    user_id = session.get('user_id')
+    post = Post.query.get_or_404(post_id)
+    if post.user_id != user_id:
+        return redirect(url_for('home'))
+    db.session.delete(post)
+    db.session.commit()
+    return redirect(url_for('home'))
+    
 if __name__ == '__main__':
     #本番プロセスのみ起動
     if os.environ.get("WERKZEUG_RUN_MAIN") == "true": 
