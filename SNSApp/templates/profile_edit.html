@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <title>profile-RareTECH学習サポートアプリ(仮)</title>
+</head>
+<body>
+    <header>
+        <!-- アプリ上部のヘッダーを表示 -->
+        <!-- いずれもaタグにしてリンクにする予定？ -->
+        <!--　左上にアプリ名 -->
+        <h3>RareTECH学習サポートアプリ(仮)</h3>
+        <!-- 右上にナビゲーション-->
+        <nav>
+            <a href="{{ url_for('home') }}">ホーム</a>
+            <a href="{{ url_for('profile') }}">プロフィール</a>
+            <a href="{{ url_for('logout') }}">ログアウト</a>
+        </nav>
+    </header>
+    <main class="profile-container">
+        <!-- アイコン画像表示 -->
+        <div class="profile-icon-area">
+            {% set size = "large" %}
+            {% include "icon.html" %}
+        </div>
+
+         <!-- 編集フォーム -->
+        <form action="{{ url_for('profile_edit') }}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="profile-edit-form">
+
+            <!-- ファイル選択ボタン -->
+            <label class="file-label">
+                 <input type="file" name="icon" accept="image/*">
+            </label>
+           
+            <!-- ユーザー名 -->
+             <input type="txt" 
+                    name="username"
+                    class="profile-username-input" 
+                    value="{{ target_user.username }}" >
+
+            <!-- プロフィール文 -->
+            <textarea name="profile_content" 
+                      class="profile-textarea"
+                      placeholder="自己紹介を自由に書きましょう！" 
+                      style="overflow-y: scroll;">
+                {{ target_user.profile.content }}        
+            </textarea>
+
+            <!-- まとめて保存 -->
+            <button type="submit" class="save-button">登録</button>
+            <a href="{{ url_for('profile') }}" class="cancel-button"> キャンセル </a>
+        </form>
+
+    </main>
+</body>
+</html>

@@ -24,7 +24,10 @@
         <div class="post-list">
             {% for post in posts %}
             <div class="post-card">
-                <img src="{{ url_for('static' , filename='icon/profile_icon.png') }}" class="profile-img">
+                <!-- アイコン画像表示 -->
+                 {% set target_user = post.author %}
+                 {% set size = "small" %}
+                 {% include "icon.html" %}
                 <div class="post-content">
                     <div class="post-header">
                         <div class="post-user">
@@ -35,9 +38,6 @@
                         </div>
                         <div class="study-time">
                             学習時間: {{ post.formatted_learning_time }}<!-- おーちゃん変更2/11-->
-                        </div>
-                        <div class="study-time">
-                            {{ post.勉強時間(仮) }}
                         </div>
                     </div>
                     <div class="post-body">

@@ -21,21 +21,79 @@ nav{
     align-items: center;
     gap: 30px;
 }
-
-main{
+/* 全体を中央に */ 
+.profile-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 24px;
 }
 
-.profile-user{
-    font-size: 24px;
+/* アイコン画像 */
+.profile-icon-area {
+    margin-top: 20px;
 }
 
-textarea{
-    width:480px ;
-    height: 252px;
+.profile-img.large {
+    width: 206px;
+    height: 206px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* フォーム全体を縦並びに整える */
+.profile-edit-form {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ユーザーnameのデザイン */
+.profile-username-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* textarea のデザイン */
+.profile-textarea {
+    width: 100%;
+    height: 250px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
     resize: none;
     font-size: 16px;
+}
+
+/* 保存ボタン */
+.save-button {
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.cancel-button {
+    display: inline-block;
+    padding: 12px;
+    background-color: gray;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
 }

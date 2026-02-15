@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
-    <link rel="stylesheet" href="../static/css/profile.css"> <!--Flask連携前確認用の為、この行確認後削除-->
-    <title>profile-RareTECH学習サポートアプリ(仮)</title>
+    <title>others-profile-RareTECH学習サポートアプリ(仮)</title>
 </head>
 <body>
     <header>
@@ -15,22 +14,31 @@
         <h3>RareTECH学習サポートアプリ(仮)</h3>
         <!-- 右上にナビゲーション-->
         <nav>
-             <a href="{{ url_for('home') }}">ホーム</a>
+            <a href="{{ url_for('home') }}">ホーム</a>
             <a href="{{ url_for('profile') }}">プロフィール</a>
             <a href="{{ url_for('logout') }}">ログアウト</a>
         </nav>
     </header>
     <main>
-        <img class="profile-img" src="../static/css/icon/profile_icon.png" alt="写真設定なし" title="プロフィール初期画像" width="206px" height="206px">
+        <!-- アイコン画像 -->
+        {% set size = "large" %}
+        {% include "icon.html" %}
 
+        <!-- ユーザー名 -->
         <div class="profile-user">
-            {{ post.user_name }}
+            {{ target_user.username }}
         </div>
         
-        <div class="profile-body">
-            <!--{{ post.profile_content }}-->
-            <textarea name="profile_content" placeholder="自己紹介を自由に書きましょう！" style="overflow-y: scroll;"></textarea>
+        <!-- 自己紹介 -->
+        <div class="profile-body" style="overflow-y: scroll;">
+            {{ target_user.profile.content or "自己紹介はまだありません。" }}
         </div>
+
+        <!-- 本人だけ編集ボタンを表示 -->
+         {% if current_user.id == target_user.id %}
+            <a href="{{ url_for('profile_edit') }}" class="edit-button">プロフィール編集</a>
+         {% endif %}
+
     </main>
     
 </body>
