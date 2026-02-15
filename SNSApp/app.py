@@ -1,3 +1,4 @@
+import time #おーちゃん追加2/15
 from dotenv import load_dotenv
 import os
 from datetime import datetime, timedelta
@@ -8,6 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import joinedload
 from functools import wraps
 import re 
+from sqlalchemy.dialects.mysql import INTEGER #おーちゃん追加2/14
 
 #定数定義
 EMAIL_PATTERN = EMAIL_PATTERN = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
@@ -61,7 +63,7 @@ def not_logged_required(f):
 class BaseModel(db.Model):
     __abstract__ = True #テーブルを作らない
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(INTEGER(unsigned=True), primary_key=True)#おーちゃん変更2/14
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, 
                            onupdate=datetime.utcnow, nullable=False )
@@ -111,7 +113,7 @@ class User(BaseModel):
 class Post(BaseModel):
     __tablename__ = "posts"
     content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), nullable=False)#おーちゃん変更2/14
     learning_time = db.Column(db.Integer) #追加byおーちゃん2/10
 
     def __repr__(self):
@@ -135,7 +137,7 @@ class Post(BaseModel):
 #Profileモデル作成
 class Profile(BaseModel):
     __tablename__ = "profiles"
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
+    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), unique=True, nullable=False) #おーちゃん変更2/14
     content = db.Column(db.Text)
     icon_path = db.Column(db.String(255))
     header_path = db.Column(db.String(255))
@@ -147,7 +149,7 @@ class Profile(BaseModel):
 @app.route('/', methods=['GET'])
 @login_required
 def index():
-    return redirect(url_for('posts'))
+    return redirect(url_for('home'))
 
 #ログイン画面の表示
 @app.route('/login')
@@ -269,11 +271,32 @@ def others_profile(user_id):
         return redirect(url_for('home'))
     return render_template('others_profile.html', post=user)
 
+#投稿詳細画面表示 おーちゃん追加2/14
+@app.route('/posts/<int:post_id>')#post_idを受け取る
+@login_required
+def post_detail(post_id):
+    post = Post.query.options(joinedload(Post.author)).get_or_404(post_id)
+    comments = []
+    user_id = session.get('user_id')
+    return render_template('post_detail.html', post=post, comments=comments, user_id=user_id)
 
 if __name__ == '__main__':
     #本番プロセスのみ起動
     if os.environ.get("WERKZEUG_RUN_MAIN") == "true": 
         #DB作成
         with app.app_context(): 
-            db.create_all()
+            max_retries = 10
+            for i in range(max_retries):
+                try:
+                    print(f"Attempting to create database tables (attempt {i+1}/{max_retries})...")
+                    db.create_all()
+                    print("Database tables created successfully.")
+                    break 
+                except Exception as e:
+                    print(f"Database connection failed: {e}")
+                    if i < max_retries - 1:
+                        time.sleep(5) # 
+                    else:
+                        print("Max retries reached. Exiting.")
+                        raise 
     app.run(host="0.0.0.0", debug=True)
