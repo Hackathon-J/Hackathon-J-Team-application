@@ -15,9 +15,9 @@
         <h1>RareTECH学習サポートアプリ(仮)</h1>
         <!-- 右上にナビゲーション-->
         <nav>
-            <a>ホーム</a>
-            <a>プロフィール</a>
-            <a>ログアウト</a>
+            <a href="{{ url_for('home') }}">ホーム</a>
+            <a href="{{ url_for('profile') }}">プロフィール</a>
+            <a href="{{ url_for('logout') }}">ログアウト</a>
         </nav>
     </header>
     <main>
@@ -45,13 +45,13 @@
             <div class="post-content">
                 <div class="post-header">
                     <div class="post-user">
-                        {{ post.user_name}}
+                        {{ post.outhor_name }}<!-- おーちゃんuserをauthorに変更2/15-->
                     </div>
                     <div class="post-time">
-                        {{ post.created_at }}
+                        {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}
                     </div>
                     <div class="study-time">
-                        {{ post.勉強時間(仮) }}
+                        学習時間: {{ post.formatted_learning_time }}<!-- おーちゃん変更2/14-->
                     </div>
                 </div>
                 <div class="post-body">
@@ -59,32 +59,31 @@
                 </div>
                 <!-- 投稿削除機能 -->
                 <div class="post-action">
-                {{% if post.user_id == user_id %}}
+                {% if post.user_id == user_id %}
                 <form action="/posts/{{ post.id }}/delete" method="post">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button class="post-button-delete" type="submit"
                     onclick="return confirm('この投稿を削除しますか？');">削除</button>
                 </form>
-                {{% endif %}}
+                {% endif %}
                 </div>
             </div>
         </div>
 
         <!-- コメント一覧 -->
         <div class="comments-section">
-            {{% if comments and comments | length > 0 %}}
+            {% if comments and comments | length > 0 %}
             <div class="comment-list">
-                {{% for comment in comments %}}
+                {% for comment in comments %}
                 <div class="comment-card">
                     <!-- Flask連携時使用　<img src="{{ url_for('static' , filename='icon/profile_icon.png') }}"> -->
                     <!-- Flask使用時削除 --><img class="profile-img" src="../static/css/icon/profile_icon.png" alt="写真設定なし" title="プロフィール初期画像" >
                     <div class="comment-content">
                         <div class="comment-header">
                             <div class="comment-user">
-                                {{ comment.user_name}}
+                                {{ comment.author_name }}<!-- おーちゃんuserをauthorに変更2/15-->
                             </div>
                             <div class="comment-time">
-                                {{ comment.created_at }}
+                                {{ comment.created_at_jst.strftime('%Y-%m-%d %H:%M') if comment.created_at_jst else '日時不明' }}
                             </div>
                         </div>
                         <div class="comment-body">
@@ -92,7 +91,7 @@
                         </div>
                     </div>
                 </div>
-                {% endfor%}
+                {% endfor %}
             </div>
             {% else %}
             <div class="empty">
@@ -101,18 +100,17 @@
             {% endif %}
         </div>
 
-    <!-- コメント投稿フォーム -->
-    <div class="new-comment">
-        <form class="new-comment-main" action="/posts/{{ post.id }}/comments" method="post">
-            <textarea name="content" placeholder="コメントを入力してください。"></textarea>
-            <input type="hidden" name="csrf_token" value="{{ csrf_token()}}">
-            <div class="new-comment-footer">
-                <button class="comment-btn" type="submit">
-                    投稿する
-                </button>
-            </div>
-        </form>
-    </div>
+        <!-- コメント投稿フォーム -->
+        <div class="new-comment">
+            <form class="new-comment-main" action="/posts/{{ post.id }}/comments" method="post">
+                <textarea name="content" placeholder="コメントを入力してください。"></textarea>
+                <div class="new-comment-footer">
+                    <button class="comment-btn" type="submit">
+                        投稿する
+                    </button>
+                </div>
+            </form>
+        </div>
     </main>
 </body>
 </html>
