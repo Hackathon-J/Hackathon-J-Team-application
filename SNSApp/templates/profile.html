@@ -31,7 +31,7 @@
             <!-- profileルートに飛ぶ -->
             <form action="{{ url_for('profile') }}" method="POST">
                 <!-- プロフィール記入欄 -->
-                <textarea name="profile_content" placeholder="自己紹介を自由に書きましょう！" style="overflow-y: scroll;"></textarea>
+                <textarea name="profile_content" placeholder="自己紹介を自由に書きましょう！" style="overflow-y: scroll;">{{ post.profile.content if post.profile else '' }}</textarea>
                 <!-- 保存ボタン -->
                 <div class="save-button-area">
                     <input type="submit" value="プロフィールを保存" class="save-button">
