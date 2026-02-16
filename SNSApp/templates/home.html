@@ -23,8 +23,9 @@
         {% if posts and posts | length > 0 %}
         <div class="post-list">
             {% for post in posts %}
+             <a href="{{ url_for('post_detail', post_id=post.id) }}" class="post-card-link">  <!-- おーちゃんline26〜変更2/15-->
             <div class="post-card">
-                <a href="{{ url_for('post_detail') }}" class="post-detail-link"></a>
+                <a href="{{ url_for('post_detail',post_id=post.id) }}" class="post-detail-link"></a>
                 <a href="{{ url_for('profile') }}" class="profile-link"><img src="{{ url_for('static' , filename='icon/profile_icon.png') }}" class="profile-img"></a>
                 <div class="post-content">
                     <div class="post-header">
@@ -43,6 +44,7 @@
                     </div>
                 </div>
             </div>
+            </a> <!-- おーちゃん投稿カード全体を囲むためここに閉じタグ2/15-->
             {% endfor %}
         </div>
         {% else %}

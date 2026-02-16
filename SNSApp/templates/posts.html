@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/posts.css') }}">
-    <link rel="stylesheet" href="../static/css/posts.css"> <!--Flask連携前確認用の為、この行確認後削除-->
     <title>RareTECH学習サポートアプリ(仮)</title>
 </head>
 <body>
@@ -22,7 +21,7 @@
     <main>
         <!-- 投稿欄の作成　-->
         <!-- 内容記入欄 -->
-        <form class="post">
+        <form class="post" action="{{ url_for('posts') }}" method="POST"><!-- app.pyのpostsルートにデータを送るためaction属性とmethod属性を追加byおーちゃん2/11-->
             <div class="post_header">
                 <!-- アイコン画像 -->
                 <img src="{{ url_for('static' , filename='icon/profile_icon.png') }}" class="profile-img">
@@ -30,9 +29,9 @@
                 <div class="studytime">
                     <label for="studytime">学習時間</label>
                     <div id="studytime">
-                        <input type="text" id="studytime_hour" name="studytime_hour">
+                        <input type="number" id="studytime_hour" name="studytime_hour" min="0" value="0"><!-- textをnumberに変更,min="0" value="0"追加byおーちゃん2/11-->
                         <span>時間</span>
-                        <input type="text" id="studytime_minutes" name="studytime_minutes">
+                        <input type="number" id="studytime_minutes" name="studytime_minutes" min="0" value="0"><!-- textをnumberに変更,min="0" value="0"追加byおーちゃん2/11-->
                         <span>分</span>
                     </div>
                 </div>
