@@ -23,6 +23,7 @@
         {% if posts and posts | length > 0 %}
         <div class="post-list">
             {% for post in posts %}
+             <a href="{{ url_for('post_detail', post_id=post.id) }}" class="post-card-link">  <!-- おーちゃんline26〜変更2/15-->
             <div class="post-card">
                 <!-- アイコン画像表示 -->
                  {% set target_user = post.author %}
@@ -41,10 +42,11 @@
                         </div>
                     </div>
                     <div class="post-body">
-                        {{ post.content }}
+                            {{ post.content }}
                     </div>
                 </div>
             </div>
+            </a> <!-- おーちゃん投稿カード全体を囲むためここに閉じタグ2/15-->
             {% endfor %}
         </div>
         {% else %}
@@ -52,10 +54,10 @@
             <p>投稿がありません。</p>
         </div>
         {% endif %}
-        <form action="{{ url_for('posts') }}" method="GET">
+        <!-- <form action="{{ url_for('posts') }}" method="GET">
             <button class="post-button" type="submit">投稿を作成</button>  
-        </form>
-        <!--<a href="{{ url_for('posts') }}" class="post-button">投稿を作成</a> aタグの方がいい？--> <!--posts_pageをpostsに変更byおーちゃん2/11-->
+        </form>-->
+        <a href="{{ url_for('posts') }}" class="post-button">投稿を作成</a> <!--posts_pageをpostsに変更byおーちゃん2/11-->
     </main>
     
 </body>
