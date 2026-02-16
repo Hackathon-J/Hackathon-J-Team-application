@@ -307,9 +307,10 @@ def profile_edit():
             )
 
             #DBに保存
-            current_user.profile.icon_path = file_url
-            db.session.commit()
-            return redirect(url_for('profile'))
+            profile.icon_path = file_url
+            
+        db.session.commit()
+        return redirect(url_for('profile'))
 
     return render_template('profile_edit.html', target_user=current_user)
 
