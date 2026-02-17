@@ -20,10 +20,33 @@
         </nav>
     </header>
     <main>
+        <!-- ランキングを表示 -->
+        <div class="ranking-card">
+        <!-- for文を回す回数を指定 -->
+        {% for ranking in range(1 , 4) %}
+        <div class="ranking-{{ loop.index }}">
+                <div class="rank">{{ loop.index }}位</div>
+                <div class="ranking-1-name">
+                    <a href="{{ url_for('profile') }}" class="profile-link">
+                        <!-- アイコン画像表示 -->
+                        {% set target_user = post.author %}
+                        {% set size = "small" %}
+                        {% include "icon.html" %}
+                    </a>
+                    {{ post.author.username }}
+                </div>
+                <div class="ranking-1-study-time">
+                    学習時間:(学習時間の合計の関数)
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        
+        <!-- 投稿一覧を表示 -->
         {% if posts and posts | length > 0 %}
         <div class="post-list">
             {% for post in posts %}
-             <a href="{{ url_for('post_detail', post_id=post.id) }}" class="post-card-link">  <!-- おーちゃんline26〜変更2/15-->
+            <a href="{{ url_for('post_detail', post_id=post.id) }}" class="post-card-link">  <!-- おーちゃんline26〜変更2/15-->
             <div class="post-card">
                 <a href="{{ url_for('post_detail',post_id=post.id) }}" class="post-detail-link"></a>
                 <a href="{{ url_for('profile') }}" class="profile-link"><img src="{{ url_for('static' , filename='icon/profile_icon.png') }}" class="profile-img"></a>
