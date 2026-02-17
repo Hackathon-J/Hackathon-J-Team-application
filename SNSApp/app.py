@@ -10,6 +10,7 @@ from sqlalchemy.orm import joinedload
 from functools import wraps
 import re 
 from sqlalchemy.dialects.mysql import INTEGER #おーちゃん追加2/14
+from sqlalchemy import func #おーちゃん追加2/17 
 
 #定数定義
 EMAIL_PATTERN = EMAIL_PATTERN = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
@@ -237,7 +238,17 @@ def home():
     # 投稿一覧と合わせて投稿者情報も一緒に取得する
     posts = Post.query.options(joinedload(Post.author)).order_by(
         Post.created_at.desc()).all()
-    return render_template('home.html', posts=posts)
+    # ランキングデータの追加　byおーちゃん2/17 line 241-251
+    ranking_data = db.session.query(
+        User.id,
+        User.username,
+        func.sum(Post.learning_time).label('total_learning_time')
+    ).join(Post, User.id == Post.user_id).group_by(
+        User.id, User.username
+    ).order_by(
+        func.sum(Post.learning_time).desc()
+    ).limit(3).all()
+    return render_template('home.html', posts=posts, ranking_data=ranking_data)
 
 
 #ここを修正してもらえると投稿記入欄に飛べる？
