@@ -27,7 +27,6 @@ main{
     flex-direction: column;
     align-items: center;
 }
-
 .post-card{
     display: flex;
     width: 680px;
@@ -35,39 +34,11 @@ main{
     border-radius: 20px;
     padding: 10px;
     gap: 5px;
-    margin-bottom: 10px;
-    position: relative;
-}
-
-/* 投稿詳細へ遷移できるように透明なリンクをpost-cardクラスの上に作成*/
-.post-detail-link{
-    width: 680px;
-    padding: 10px;
-    border-radius: 20px;
-    height: calc(100% - 20px);
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
-}
-
-.post-detail-link:hover{
-    background-color: rgba(255,255,255,0.3);
-}
-/* アイコンからプロフィールへ遷移できるようにリンクを作成 */
-.profile-link{
-    width: 60px;
-    height: 60px;
-    z-index: 20;
 }
 
 .profile-img{
     width: 60px;
     height: 60px;
-}
-
-.profile-link:hover{
-    background-color: rgba(255,255,255,0.3);
 }
 
 .post-content{
@@ -91,14 +62,12 @@ main{
     width: 680px;
     text-align: center;
     border-radius: 20px;
-    position:sticky;
+    position:fixed;
     bottom: 60px;
     padding: 10px;
     text-decoration: none;
-    margin-top: 60px;
-    z-index: 30;
 }
 
 .post-button:hover{
-    opacity: 0.8;
+    opacity: 0.7;
 }
