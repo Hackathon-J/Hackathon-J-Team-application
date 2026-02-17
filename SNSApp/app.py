@@ -282,8 +282,6 @@ def posts():
     return render_template('posts.html')
 
 # 本人プロフィール画面表示
-
-
 @app.route('/profile')
 @login_required
 def profile():
