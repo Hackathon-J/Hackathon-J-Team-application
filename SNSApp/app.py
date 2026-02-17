@@ -176,8 +176,6 @@ class Profile(BaseModel):
         return f'<Profile id={self.id} user_id={self.user_id}>'
 
 # ルートページのリダイレクト処理
-
-
 @app.route('/', methods=['GET'])
 def index():
     return redirect(url_for('home'))
@@ -244,8 +242,6 @@ def signup_post():
     return redirect(url_for('home'))
 
 # ログアウト処理
-
-
 @app.route('/logout')
 def logout():
     logout_user()

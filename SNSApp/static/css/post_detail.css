@@ -43,11 +43,12 @@ main{
     gap: 5px;
 }
 
-.profile-img{
+.profile-img.small {
     width: 60px;
     height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
 }
-
 .post-content{
     width: 100%;
 }

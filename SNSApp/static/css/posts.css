@@ -28,6 +28,13 @@ main{
 
 }
 
+.profile-img.small {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .post{
     position: relative;     /* postクラスを親要素にする */
     width: 80%;             /* 画面幅の80%に設定 */

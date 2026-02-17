@@ -40,12 +40,13 @@
 
         <!-- 選択した投稿だけを表示(1件だけ) -->
         <div class="post-card">
-            <!-- Flask連携時使用　<img src="{{ url_for('static' , filename='icon/profile_icon.png') }}"> -->
-            <!-- Flask使用時削除 --><img class="profile-img" src="../static/css/icon/profile_icon.png" alt="写真設定なし" title="プロフィール初期画像" >
-            <div class="post-content">
+            <!-- アイコン画像表示 -->
+            {% set target_user = post.author %}
+            {% set size = "small" %}
+            {% include "icon.html" %}
                 <div class="post-header">
                     <div class="post-user">
-                        {{ post.outhor_name }}<!-- おーちゃんuserをauthorに変更2/15-->
+                        {{ post.outhor_name }}
                     </div>
                     <div class="post-time">
                         {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}
