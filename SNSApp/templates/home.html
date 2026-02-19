@@ -20,30 +20,90 @@
         </nav>
     </header>
     <main>
+        <!-- おーちゃんランキング表示を追加 -->
+        <div class="ranking-section">
+            <h2>学習時間ランキング</h2>
+            {% if ranking_data %}
+            <ol style="list-style-type: none; padding-left: 0;">
+                {% for rank_tuple in ranking_data %} 
+                {% set user = rank_tuple[0] %} 
+                {% set total_time = rank_tuple[1] %} 
+                <li>
+                    <strong>{{ loop.index }}位:</strong>
+                    <a href="{{ url_for('others_profile', user_id=user.id) }}">
+                        {{ user.username }}
+                    </a>: 
+                    {% set hours = total_time // 60 %}
+                    {% set minutes = total_time % 60 %}
+                    {{ hours }}時間{{ minutes }}分 
+                </li>
+                {% endfor %}
+            </ol>
+            {% else %}
+            <p>まだ学習時間のランキングはありません。</p>
+            {% endif %}
+        </div>
+        <!-- ランキングを表示 -->
+        <div class="ranking-card">
+        <!-- line26〜追加と変更 by おーちゃん2/17 -->
+        {% if ranking_data %} 
+        <!-- ranking_dataをループする -->
+        {% for rank_tuple in ranking_data %}
+        {% set user = rank_tuple[0] %} 
+        {% set total_time = rank_tuple[1] %} 
+        <div class="ranking-{{ loop.index }}">
+                <div class="rank">{{ loop.index }}位</div>
+                <div class="ranking-1-name">
+                    <a href="{{ url_for('others_profile', user_id=user.id) }}" class="profile-link">
+                        <!-- アイコン画像表示 -->
+                        {% set target_user = user %}
+                        {% set size = "small" %}
+                        {% include "icon.html" %}
+                    </a>
+                    {{ user.username }}
+                </div>
+                <div class="ranking-1-study-time">
+                    学習時間:
+                    {% set hours = total_time // 60 %} 
+                    {% set minutes = total_time % 60 %}
+                    {{ hours }}時間{{ minutes }}分 
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">
+                <p>まだランキングデータがありません。</p>
+            </div>
+        {% endif %}
+        </div>
+
+        <!-- 投稿一覧を表示 -->
         {% if posts and posts | length > 0 %}
         <div class="post-list">
             {% for post in posts %}
             <div class="post-card">
+                <a href="{{ url_for('post_detail', post_id=post.id) }}" class="post-link">
                 <!-- アイコン画像表示 -->
-                 {% set target_user = post.author %}
-                 {% set size = "small" %}
-                 {% include "icon.html" %}
-                <div class="post-content">
-                    <div class="post-header">
-                        <div class="post-user">
-                            {{ post.author.username }}
+                    {% set target_user = post.author %}
+                    {% set size = "small" %}
+                    {% include "icon.html" %}
+                    <div class="post-content">
+                        <div class="post-header">
+                            <div class="post-user">
+                                {{ post.author.username }}
+                            </div>
+                            <div class="post-time">
+                                {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}<!-- おーちゃん日本時間になるように変更2/11-->
+                            </div>
+                            <div class="study-time">
+                                学習時間: {{ post.formatted_learning_time }}<!-- おーちゃん変更2/11-->
+                            </div>
                         </div>
-                        <div class="post-time">
-                            {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}<!-- おーちゃん日本時間になるように変更2/11-->
-                        </div>
-                        <div class="study-time">
-                            学習時間: {{ post.formatted_learning_time }}<!-- おーちゃん変更2/11-->
+                        <div class="post-body">
+                            {{ post.content }}
                         </div>
                     </div>
-                    <div class="post-body">
-                        {{ post.content }}
-                    </div>
-                </div>
+                </a>
             </div>
             {% endfor %}
         </div>
