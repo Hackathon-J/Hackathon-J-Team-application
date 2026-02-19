@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile_edit.css') }}">
     <title>profile-RareTECH学習サポートアプリ(仮)</title>
 </head>
 <body>
@@ -47,9 +47,7 @@
             <textarea name="content" 
                       class="profile-textarea"
                       placeholder="自己紹介を自由に書きましょう！" 
-                      style="overflow-y: scroll;">
-                {{ target_user.profile.content }}        
-            </textarea>
+                      style="overflow-y: scroll;">{{ target_user.profile.content }}</textarea>
 
             <!-- まとめて保存 -->
             <button type="submit" class="save-button">登録</button>
