@@ -1,10 +1,11 @@
+import time  # おーちゃん追加2/15
 from dotenv import load_dotenv
 import os
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-#SQLAlchemyのrelationshipはdb.relationshipを使うのがいいらしい。
+# SQLAlchemyのrelationshipはdb.relationshipを使うのがいいらしい。
 from sqlalchemy.orm import joinedload
 from functools import wraps
 import re 
@@ -18,13 +19,12 @@ from flask_login import UserMixin, LoginManager, login_user, logout_user, login_
 from sqlalchemy.dialects.mysql import INTEGER 
 #おーちゃん追加2/18 　SUM,COUNTなどのSQLの集計関数をPython内で使えるようにする
 from sqlalchemy import func 
-import time
 
-#定数定義
+# 定数定義
 EMAIL_PATTERN = EMAIL_PATTERN = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
 SESSION_DAYS = 30
 
-#Flaskアプリのインスタンス作成
+# Flaskアプリのインスタンス作成
 app = Flask(__name__)
 
 #LoginMnagerの初期化
@@ -34,15 +34,15 @@ login_manager.login_view = 'login'
 
 #セッション設定
 app.permanent_session_lifetime = timedelta(days=SESSION_DAYS)
-#SQLデータベースの指定
-#SQLiteを指定⇒MYSQLの指定が必要だと思うので変更
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+# SQLデータベースの指定
+# SQLiteを指定⇒MYSQLの指定が必要だと思うので変更
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     f"mysql+pymysql://{os.getenv('DB_USER')}:"
     f"{os.getenv('DB_PASSWORD')}@db:3306/"
     f"{os.getenv('DB_DATABASE')}"
 )
-#SQLAlchemyのイベント通知無効化
+# SQLAlchemyのイベント通知無効化
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #S3クライアントの追加
@@ -53,9 +53,9 @@ s3 = boto3.client(
     region_name=os.getenv("AWS_S3_REGION") 
                         )
 
-#コンテナを再起動するたびにセッションが無効かされるので別方法を取る。
-#app.config['SECRET_KEY'] = os.urandom(24)
-#SECRET_KEYを.envに作成する。 line30-35おーちゃん追加
+# コンテナを再起動するたびにセッションが無効かされるので別方法を取る。
+# app.config['SECRET_KEY'] = os.urandom(24)
+# SECRET_KEYを.envに作成する。 line30-35おーちゃん追加
 load_dotenv()
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 if app.config['SECRET_KEY'] is None:
@@ -84,13 +84,13 @@ class BaseModel(db.Model):
     @property
     def created_at_jst(self):
         return self.jst_Change(self.created_at)
-    
-    #updated_atの日本時間変換
+
+    # updated_atの日本時間変換
     @property
     def updated_at_jst(self):
         return self.jst_Change(self.updated_at)
-    
-    #計算式_UTC+9hour
+
+    # 計算式_UTC+9hour
     @staticmethod
     def jst_Change(dt):
         if dt is None:
@@ -111,16 +111,16 @@ class User(UserMixin, BaseModel):
     profile = db.relationship('Profile', backref='user', uselist=False)
     
     def __repr__(self):
-        #ユーザーIDもあった方が後で検索とかし易いと思う
-        #return f'<User {self.username}>'
+        # ユーザーIDもあった方が後で検索とかし易いと思う
+        # return f'<User {self.username}>'
         return f'<User id={self.id} username={self.username}>'
 
-    #パスワードの保存(ハッシュ値)
+    # パスワードの保存(ハッシュ値)
     def set_password(self, password):
         self.password_hash = generate_password_hash(
             password, method='pbkdf2:sha256')
 
-    #パスワードの検証
+    # パスワードの検証
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -128,22 +128,22 @@ class User(UserMixin, BaseModel):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-#Postモデル作成
+# Postモデル作成
 class Post(BaseModel):
     __tablename__ = "posts"
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), nullable=False)#おーちゃん変更2/14
     learning_time = db.Column(db.Integer) #追加byおーちゃん2/10
-    cascade='all, delete-orphan' #追加byおーちゃん2/15
     comments = db.relationship('Comment', backref='post', lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Post {self.id} by {self.user_id}>'
-    @property #line77〜91追加byおーちゃん2/10
+
+    @property  # line77〜91追加byおーちゃん2/10
     def formatted_learning_time(self):
         if self.learning_time is None:
             return "未記録"
-        
+
         hours = self.learning_time // 60
         minutes = self.learning_time % 60
         if hours > 0 and minutes > 0:
@@ -155,13 +155,13 @@ class Post(BaseModel):
         else:
             return "0分"
 
-#Profileモデル作成
+# Profileモデル作成
 class Profile(BaseModel):
     __tablename__ = "profiles"
     user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), unique=True, nullable=False)#おーちゃんunsigned=True追加2/18
     icon_path = db.Column(db.String(255))
     header_path = db.Column(db.String(255))
-    
+
     def __repr__(self):
         return f'<Profile id={self.id} user_id={self.user_id}>'
 
@@ -179,12 +179,12 @@ class Comment(BaseModel):
 def index():
     return redirect(url_for('home'))
 
-#ログイン画面の表示
+# ログイン画面の表示
 @app.route('/login')
 def login():
     return render_template('login.html')
 
-#ログイン処理
+# ログイン処理
 @app.route('/submit', methods=['POST'])
 def submit():
     # request.formは<form>タグから送られてきたデータを扱う。
@@ -212,8 +212,8 @@ def submit():
 @not_logged_required
 def signup_view():
     return render_template('signup.html')
-    
-#サインアップ処理(POST)
+
+# サインアップ処理(POST)
 @app.route('/signup', methods=['POST'])
 def signup_post():
     username = request.form['username']
@@ -243,14 +243,14 @@ def signup_post():
     login_user(new_user)
     return redirect(url_for('home'))
 
-#ログアウト処理
+# ログアウト処理
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
 
-#投稿一覧画面表示
+# 投稿一覧画面表示
 @app.route('/home')
 @login_required
 def home():
@@ -275,10 +275,10 @@ def posts():
     if request.method == 'POST':
         content = request.form['post_body']
         try:
-            studytime_hour = int(request.form.get('studytime_hour', 0)) 
-            studytime_minutes = int(request.form.get('studytime_minutes', 0))    
+            studytime_hour = int(request.form.get('studytime_hour', 0))
+            studytime_minutes = int(request.form.get('studytime_minutes', 0))
         except ValueError:
-            studytime_hour = 0 
+            studytime_hour = 0
             studytime_minutes = 0
         total_learning_minutes = (studytime_hour * 60) + studytime_minutes
         if content:
@@ -288,13 +288,13 @@ def posts():
             return redirect(url_for('home'))
     return render_template('posts.html')
 
-#本人プロフィール画面表示
+# 本人プロフィール画面表示
 @app.route('/profile')
 @login_required
 def profile():
     return render_template('profile_view.html', target_user=current_user)
 
-#他人プロフィール画面表示
+# 他人プロフィール画面表示
 @app.route('/others_profile/<int:user_id>')
 @login_required
 def others_profile(user_id):
@@ -344,9 +344,10 @@ def profile_edit():
             )
 
             #DBに保存
-            current_user.profile.icon_path = file_url
-            db.session.commit()
-            return redirect(url_for('profile'))
+            profile.icon_path = file_url
+            
+        db.session.commit()
+        return redirect(url_for('profile'))
 
     return render_template('profile_edit.html', target_user=current_user)
 
@@ -391,7 +392,7 @@ def delete_post(post_id):
 if __name__ == '__main__':
     #本番プロセスのみ起動
     if os.environ.get("WERKZEUG_RUN_MAIN") == "true": 
-        #DB作成
+        #DB作成 
         with app.app_context(): 
             max_retries = 10
             for i in range(max_retries):

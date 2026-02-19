@@ -20,30 +20,9 @@
         </nav>
     </header>
     <main>
-        <!-- おーちゃんランキング表示を追加 -->
-        <div class="ranking-section">
-            <h2>学習時間ランキング</h2>
-            {% if ranking_data %}
-            <ol style="list-style-type: none; padding-left: 0;">
-                {% for rank_tuple in ranking_data %} 
-                {% set user = rank_tuple[0] %} 
-                {% set total_time = rank_tuple[1] %} 
-                <li>
-                    <strong>{{ loop.index }}位:</strong>
-                    <a href="{{ url_for('others_profile', user_id=user.id) }}">
-                        {{ user.username }}
-                    </a>: 
-                    {% set hours = total_time // 60 %}
-                    {% set minutes = total_time % 60 %}
-                    {{ hours }}時間{{ minutes }}分 
-                </li>
-                {% endfor %}
-            </ol>
-            {% else %}
-            <p>まだ学習時間のランキングはありません。</p>
-            {% endif %}
-        </div>
+       
         <!-- ランキングを表示 -->
+        <h2>学習時間ランキング</h2>
         <div class="ranking-card">
         <!-- line26〜追加と変更 by おーちゃん2/17 -->
         {% if ranking_data %} 
@@ -81,8 +60,8 @@
         {% if posts and posts | length > 0 %}
         <div class="post-list">
             {% for post in posts %}
-            <div class="post-card">
-                <a href="{{ url_for('post_detail', post_id=post.id) }}" class="post-link">
+            <a href="{{ url_for('post_detail', post_id=post.id) }}" class="post-card-link">  <!-- おーちゃんline26〜変更2/15-->
+                <div class="post-card">
                 <!-- アイコン画像表示 -->
                     {% set target_user = post.author %}
                     {% set size = "small" %}
@@ -103,8 +82,8 @@
                             {{ post.content }}
                         </div>
                     </div>
-                </a>
-            </div>
+                </div>
+            </a> <!-- おーちゃん投稿カード全体を囲むためここに閉じタグ2/15-->
             {% endfor %}
         </div>
         {% else %}
@@ -112,10 +91,10 @@
             <p>投稿がありません。</p>
         </div>
         {% endif %}
-        <form action="{{ url_for('posts') }}" method="GET">
+        <!-- <form action="{{ url_for('posts') }}" method="GET">
             <button class="post-button" type="submit">投稿を作成</button>  
-        </form>
-        <!--<a href="{{ url_for('posts') }}" class="post-button">投稿を作成</a> aタグの方がいい？--> <!--posts_pageをpostsに変更byおーちゃん2/11-->
+        </form>-->
+        <a href="{{ url_for('posts') }}" class="post-button">投稿を作成</a> <!--posts_pageをpostsに変更byおーちゃん2/11-->
     </main>
     
 </body>

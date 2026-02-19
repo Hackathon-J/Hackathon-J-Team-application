@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/posts.css') }}">
-    <link rel="stylesheet" href="../static/css/posts.css"> <!--Flask連携前確認用の為、この行確認後削除-->
     <title>RareTECH学習サポートアプリ(仮)</title>
 </head>
 <body>
@@ -25,7 +24,9 @@
         <form class="post" action="{{ url_for('posts') }}" method="POST"><!-- app.pyのpostsルートにデータを送るためaction属性とmethod属性を追加byおーちゃん2/11-->
             <div class="post_header">
                 <!-- アイコン画像 -->
-                <img src="{{ url_for('static' , filename='icon/profile_icon.png') }}" class="profile-img">
+                {% set target_user = current_user %}
+                {% set size = "small" %}
+                {% include "icon.html" %}
                  <!-- 学習時間記入欄 -->
                 <div class="studytime">
                     <label for="studytime">学習時間</label>
