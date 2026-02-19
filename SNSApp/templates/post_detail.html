@@ -21,12 +21,12 @@
         </nav>
     </header>
     <main>
-        <div class="page-title">
-            <h2>投稿詳細</h2>
-        </div>
+        <h2 class="page-title">
+            投稿詳細
+        </h2>
         <!-- フラッシュメッセージ 
         「コメント内容が空です。」ro「コメントの投稿が完了しました。」-->
-        {% with messages = get_flashed_messages(with_categories=true) %}
+        <!--{% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div class="flash-messages">
             {% for category, message in messages %}
@@ -36,7 +36,7 @@
             {% endfor %}
         </div>
         {% endif %}
-        {% endwith %}
+        {% endwith %} -->
 
         <!-- 選択した投稿だけを表示(1件だけ) -->
         <div class="post-card">
@@ -44,6 +44,7 @@
             {% set target_user = post.author %}
             {% set size = "small" %}
             {% include "icon.html" %}
+            <div class="post-content">
                 <div class="post-header">
                     <div class="post-user">
                         {{ post.author.username }}
@@ -58,7 +59,7 @@
                 <div class="post-body">
                     {{ post.content }}
                 </div>
-                <!-- 投稿削除機能 -->
+            <!-- 投稿削除機能 -->
                 <div class="post-action">
                 {% if post.user_id == user_id %}
                 <form action="/posts/{{ post.id }}/delete" method="post">
