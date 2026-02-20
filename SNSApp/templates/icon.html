@@ -1,0 +1,6 @@
+<!-- アイコン画像表示 -->
+{% if target_user.profile and target_user.profile.icon_path %}
+    <img class="profile-img {{ size }}" src="{{ target_user.profile.icon_path }}" alt="icon" title="プロフィール画像">
+{% else %}
+    <img class="profile-img {{ size }}" src="{{ url_for('static', filename='css/icon/profile_icon.png')}}" alt="プロフィール画像設定無し" title="プロフィール初期画像">
+{% endif %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile_view.css') }}">
+    <title>others-profile-RareTECH学習サポートアプリ(仮)</title>
+</head>
+<body>
+    <header>
+        <!-- アプリ上部のヘッダーを表示 -->
+        <!-- いずれもaタグにしてリンクにする予定？ -->
+        <!--　左上にアプリ名 -->
+        <h3>RareTECH学習サポートアプリ(仮)</h3>
+        <!-- 右上にナビゲーション-->
+        <nav>
+            <a href="{{ url_for('home') }}">ホーム</a>
+            <a href="{{ url_for('profile') }}">プロフィール</a>
+            <a href="{{ url_for('logout') }}">ログアウト</a>
+        </nav>
+    </header>
+    <main>
+        <div class="profile-container">
+            <!-- アイコン画像 -->
+            {% set size = "large" %}
+            {% include "icon.html" %}
+            <!-- ユーザー名 -->
+            <div class="profile-user">
+                <h3>{{ target_user.username }}</h3>
+            </div>
+            <!-- 自己紹介 -->
+            <div class="profile-body" style="overflow-y: scroll;">
+                {{ target_user.profile.content or "自己紹介はまだありません。" }}
+            </div>
+            <!-- 本人だけ編集ボタンを表示 -->
+             {% if current_user.id == target_user.id %}
+                <form action="{{ url_for('profile_edit') }}">
+                    <button type="submit" class="edit-button">プロフィール編集</button>
+                </form>
+             {% endif %}
+        </div>
+    </main>
+    
+</body>
+</html>

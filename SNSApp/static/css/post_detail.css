@@ -1,0 +1,127 @@
+/* body全体を内容の量に関係なく、PCやスマホの画面いっぱいの高さにする。*/
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0px;
+    gap: 0px;
+}
+/* 画面内のヘッダーの設定、横並びにして、背景は青、文字は白色、配置は両端に、10px余白 */
+header{
+    display: flex;
+    background-color: rgb(23, 117, 194);
+    color: white;
+    justify-content: space-between;
+    padding:10px 0px 10px;
+}
+
+/* ヘッダーの見出しをh1タグへ変更しサイズを指定*/
+h1{
+    font-size: 18px;
+    margin-left: 20px;
+}
+/* ナビゲーションの設定。横並びにして、オブジェクト間で30pxの間隔をあける。 */
+nav{
+    display: flex;
+    justify-content: stretch;
+    align-items: center;
+    gap: 30px;
+    margin-right: 20px;
+}
+
+main{
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+    gap: 12px;
+}
+
+.page-title{
+    margin: 0;
+}
+
+.post-card{
+    display: flex;
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    padding: 10px;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.profile-img.small {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.post-content{
+    width: 100%;
+}
+
+.post-header{
+    display: flex;
+    gap: 60px;
+}
+
+.post-body{
+    background-color: white;
+    margin: 5px;
+}
+
+.post-action{
+    text-align: end;
+}
+
+.comment-card {
+    display: flex;
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    padding: 10px;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.comment-content{
+    width: 100%;
+}
+
+.comment-header{
+    display: flex;
+    gap: 60px;
+}
+
+.comment-body{
+    background-color: white;
+    margin: 5px;
+}
+
+.new-comment{
+    position: sticky;
+    bottom: 24px;
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    padding: 10px 0px 10px;
+}
+
+textarea{
+    resize: none;
+    width: 95%;
+    height: 70px;
+    font-size: 16px;
+}
+
+.new-comment-footer{
+    text-align:right;
+    margin-right: 15px;
+}
+
+.comment-btn{
+    background-color: #0085EE;
+    color: #ffff;
+    border: none;
+}
+
+.comment-btn:hover{
+    opacity: 0.7;
+}
