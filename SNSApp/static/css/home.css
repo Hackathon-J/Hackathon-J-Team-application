@@ -44,6 +44,41 @@ main{
     top: 100px;
     z-index: 30;
 }
+/* 順位はまとめてCSS適用 */
+.rank{
+    font-size: 20px;
+}
+
+/* 順位別に装飾できるよう個別にクラス設定中 */
+.ranking-1{
+    text-align: center;
+}
+
+.ranking-1-name{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ranking-2{
+    text-align: center;
+}
+
+.ranking-2-name{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ranking-3{
+    text-align: center;
+}
+
+.ranking-3-name{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
 
 .post-card{
     display: flex;
@@ -78,11 +113,9 @@ main{
     z-index: 20;
 }
 
-.profile-img.small {
+.profile-img{
     width: 60px;
     height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
 }
 
 .profile-link:hover{

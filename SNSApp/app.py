@@ -15,7 +15,10 @@ import boto3
 from werkzeug.utils import secure_filename
 #flask-login機能追加
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
-from sqlalchemy.dialects.mysql import INTEGER  # おーちゃん追加2/14
+#おーちゃん追加2/18　idやuser_idで負の値を許容せず大きな正の値を扱えるようにする
+from sqlalchemy.dialects.mysql import INTEGER 
+#おーちゃん追加2/18 　SUM,COUNTなどのSQLの集計関数をPython内で使えるようにする
+from sqlalchemy import func 
 
 # 定数定義
 EMAIL_PATTERN = EMAIL_PATTERN = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
@@ -59,21 +62,25 @@ if app.config['SECRET_KEY'] is None:
     raise RuntimeError("SECRET_KEYが設定されていません。'.env'ファイルを確認してください。")
 db = SQLAlchemy(app)
 
+# ログイン「無」確認用デコレータ
+def not_logged_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user.is_authenticated: # flask_loginのcurrent_userを使用
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 #データベース共通部分を親クラスとしてまとめた
 class BaseModel(db.Model):
     __abstract__ = True #テーブルを作らない
 
-
-class BaseModel(db.Model):
-    __abstract__ = True  # テーブルを作らない
-
-    id = db.Column(INTEGER(unsigned=True), primary_key=True)  # おーちゃん変更2/14
-    created_at = db.Column(
-        db.DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow,
-                           onupdate=datetime.utcnow, nullable=False)
-
-    # created_atの日本時間変換
+    id = db.Column(INTEGER(unsigned=True), primary_key=True)#おーちゃんunsigned=True追加2/18
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, 
+                           onupdate=datetime.utcnow, nullable=False )
+    
+    #created_atの日本時間変換
     @property
     def created_at_jst(self):
         return self.jst_Change(self.created_at)
@@ -94,13 +101,13 @@ class BaseModel(db.Model):
 class User(UserMixin, BaseModel):
     __tablename__ = "users"
     
-    #ログインIDとして使う
-    mailaddress = db.Column(db.String(120), unique=True, nullable=False)
-    
-    username = db.Column(db.String(80), nullable=False)
+    #ログインIDとして使う、おーちゃん2/18修正
+    username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(120), nullable=False)
+    mailaddress = db.Column(db.String(120), unique=True, nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     comments = db.relationship('Comment', backref='author', lazy=True)
+    #UserとProfileを1対1に結び付ける設定
     profile = db.relationship('Profile', backref='user', uselist=False)
     
     def __repr__(self):
@@ -125,12 +132,9 @@ def load_user(user_id):
 class Post(BaseModel):
     __tablename__ = "posts"
     content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey(
-        'users.id'), nullable=False)  # おーちゃん変更2/14
-    learning_time = db.Column(db.Integer)  # 追加byおーちゃん2/10
-    cascade = 'all, delete-orphan'  # 追加byおーちゃん2/15
-    comments = db.relationship(
-        'Comment', backref='post', lazy=True, cascade='all, delete-orphan')
+    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), nullable=False)#おーちゃん変更2/14
+    learning_time = db.Column(db.Integer) #追加byおーちゃん2/10
+    comments = db.relationship('Comment', backref='post', lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Post {self.id} by {self.user_id}>'
@@ -151,31 +155,26 @@ class Post(BaseModel):
         else:
             return "0分"
 
-# Commentモデル作成 おーちゃん2/15追加
-class Comment(BaseModel):
-    __tablename__ = "comments"
-    content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(INTEGER(unsigned=True),
-                        db.ForeignKey('users.id'), nullable=False)
-    post_id = db.Column(INTEGER(unsigned=True),
-                        db.ForeignKey('posts.id'), nullable=False)
-
-    def __repr__(self):
-        return f'<Comment {self.id} by {self.user_id} on Post {self.post_id}>'
-
 # Profileモデル作成
 class Profile(BaseModel):
     __tablename__ = "profiles"
-    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey(
-        'users.id'), unique=True, nullable=False)  # おーちゃん変更2/14
-    content = db.Column(db.Text)
+    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), unique=True, nullable=False)#おーちゃんunsigned=True追加2/18
     icon_path = db.Column(db.String(255))
     header_path = db.Column(db.String(255))
 
     def __repr__(self):
         return f'<Profile id={self.id} user_id={self.user_id}>'
 
-# ルートページのリダイレクト処理
+#Commentモデル作成 おーちゃん2/18追加
+class Comment(BaseModel):
+    __tablename__ = "comments"
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), nullable=False)  
+    post_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('posts.id'), nullable=False)
+    def __repr__(self):
+        return f'<Comment {self.id} by {self.user_id} on Post {self.post_id}>'
+
+#ルートページのリダイレクト処理
 @app.route('/', methods=['GET'])
 def index():
     return redirect(url_for('home'))
@@ -201,13 +200,16 @@ def submit():
     user = User.query.filter_by(mailaddress=mailaddress).first()
     
     if user and user.check_password(password):
-        login_user(user)
+        #セッションにuser_idを追加
+        login_user(user) # おーちゃん追加
+        session.permanent = True  # おーちゃん追加
         return redirect(url_for('home'))
-    
-    return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
 
 #サインアップページの表示(GET)
 @app.route('/signup', methods=['GET'])
+@not_logged_required
 def signup_view():
     return render_template('signup.html')
 
@@ -254,7 +256,16 @@ def logout():
 def home():
     # 投稿一覧と合わせて投稿者情報も一緒に取得する
     posts = Post.query.options(joinedload(Post.author)).order_by(Post.created_at.desc()).all()
-    return render_template('home.html', posts=posts)
+    # ランキングデータの追加　byおーちゃん2/18
+    ranking_data = db.session.query(
+        User, 
+        func.sum(Post.learning_time).label('total_learning_time')
+    ).join(Post, User.id == Post.user_id).group_by(
+        User.id, User.username 
+    ).order_by(
+        func.sum(Post.learning_time).desc()
+    ).limit(3).all()
+    return render_template('home.html', posts=posts, ranking_data=ranking_data)
 
 
 #投稿記入欄
@@ -340,24 +351,22 @@ def profile_edit():
 
     return render_template('profile_edit.html', target_user=current_user)
 
-# 投稿詳細画面表示 おーちゃん追加2/15
-@app.route('/posts/<int:post_id>')  # post_idを受け取る
+#投稿詳細画面表示 おーちゃん追加2/18
+@app.route('/posts/<int:post_id>')#post_idを受け取る
 @login_required
 def post_detail(post_id):
     post = Post.query.options(joinedload(Post.author)).get_or_404(post_id)
-    comments = Comment.query.filter_by(post_id=post_id).options(
-        joinedload(Comment.author)).order_by(Comment.created_at.asc()).all()
-    user_id = session.get('user_id')
+    comments = Comment.query.filter_by(post_id=post_id).options(joinedload(Comment.author)).order_by(Comment.created_at.asc()).all()
+    user_id = current_user.id
     return render_template('post_detail.html', post=post, comments=comments, user_id=user_id)
 
-# コメント投稿用のPOSTルート おーちゃん追加2/15
+#コメント投稿用のPOSTルート おーちゃん追加2/18
 @app.route('/posts/<int:post_id>/comments', methods=['POST'])
 @login_required
 def add_comment(post_id):
     post = Post.query.options(joinedload(Post.author)).get_or_404(post_id)
-    comments = Comment.query.filter_by(post_id=post_id).options(
-        joinedload(Comment.author)).order_by(Comment.created_at.asc()).all()
-    user_id = session.get('user_id')
+    comments = Comment.query.filter_by(post_id=post_id).options(joinedload(Comment.author)).order_by(Comment.created_at.asc()).all()
+    user_id = current_user.id
     if not user_id:
         return redirect(url_for('login'))
     content = request.form['content']
@@ -368,10 +377,11 @@ def add_comment(post_id):
     db.session.commit()
     return redirect(url_for('post_detail', post_id=post_id))
 
+#コメント削除 おーちゃん追加2/18
 @app.route('/posts/<int:post_id>/delete', methods=['POST'])
 @login_required
 def delete_post(post_id):
-    user_id = session.get('user_id')
+    user_id = current_user.id
     post = Post.query.get_or_404(post_id)
     if post.user_id != user_id:
         return redirect(url_for('home'))
@@ -379,25 +389,19 @@ def delete_post(post_id):
     db.session.commit()
     return redirect(url_for('home'))
 
-
 if __name__ == '__main__':
-    # 本番プロセスのみ起動
-    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-        # DB作成
-        with app.app_context():
+    #本番プロセスのみ起動
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true": 
+        #DB作成 
+        with app.app_context(): 
             max_retries = 10
             for i in range(max_retries):
                 try:
-                    print(
-                        f"Attempting to create database tables (attempt {i+1}/{max_retries})...")
                     db.create_all()
-                    print("Database tables created successfully.")
-                    break
+                    break 
                 except Exception as e:
-                    print(f"Database connection failed: {e}")
                     if i < max_retries - 1:
-                        time.sleep(5)
+                        time.sleep(5) # 
                     else:
-                        print("Max retries reached. Exiting.")
-                        raise
+                        raise 
     app.run(host="0.0.0.0", debug=True)
