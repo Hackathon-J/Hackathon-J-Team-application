@@ -1,117 +1,103 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    <link rel="stylesheet" href="../static/css/post_detail.css"> <!--Flask連携前確認用の為、この行確認後削除-->
-    <title>RareTECH学習サポートアプリ(仮)</title>
-</head>
-<body>
-    <header>
-        <!-- アプリ上部のヘッダーを表示 -->
-        <!-- いずれもaタグにしてリンクにする予定？ -->
-        <!--　左上にアプリ名 -->
-        <h1>RareTECH学習サポートアプリ(仮)</h1>
-        <!-- 右上にナビゲーション-->
-        <nav>
-            <a href="{{ url_for('home') }}">ホーム</a>
-            <a href="{{ url_for('profile') }}">プロフィール</a>
-            <a href="{{ url_for('logout') }}">ログアウト</a>
-        </nav>
-    </header>
-    <main>
-        <h2 class="page-title">
-            投稿詳細
-        </h2>
-        <!-- フラッシュメッセージ 
-        「コメント内容が空です。」ro「コメントの投稿が完了しました。」-->
-        <!--{% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="flash-messages">
-            {% for category, message in messages %}
-            <div class="flash flash-{{ category }}">
-                {{ message }}
+<!-- base.htmlを継承 -->
+{% extends "base.html" %}
+<!-- ページごとに必要なcssを追加 -->
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/post_detail.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <h2 class="page-title">
+        投稿詳細
+    </h2>
+    <!-- フラッシュメッセージ 
+    「コメント内容が空です。」ro「コメントの投稿が完了しました。」-->
+    <!--{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %} -->
+
+    <!-- 選択した投稿だけを表示(1件だけ) -->
+    <div class="post-card">
+        <!-- アイコン画像表示 -->
+        {% set target_user = post.author %}
+        {% set size = "small" %}
+        {% include "icon.html" %}
+        <div class="post-content">
+            <div class="post-header">
+                <div class="post-user">
+                    {{ post.author.username }}
+                </div>
+                <div class="post-time">
+                    {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}
+                </div>
+                <div class="study-time">
+                    学習時間: {{ post.formatted_learning_time }}
+                </div>
+            </div>
+            <div class="post-body">
+                {{ post.content }}
+            </div>
+        <!-- 投稿削除機能 -->
+            <div class="post-action">
+            {% if post.user_id == user_id %}
+            <form action="/posts/{{ post.id }}/delete" method="post">
+                <button class="post-button-delete" type="submit"
+                onclick="return confirm('この投稿を削除しますか？');">削除</button>
+            </form>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- コメント一覧 -->
+    <div class="comments-section">
+        {% if comments and comments | length > 0 %}
+        <div class="comment-list">
+            {% for comment in comments %}
+            <div class="comment-card">
+                <!-- Flask連携時使用　<img src="{{ url_for('static' , filename='icon/profile_icon.png') }}"> -->
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <div class="comment-user">
+                            {{ comment.author.username}}
+                        </div>
+                        <div class="comment-time">
+                            {{ comment.created_at_jst.strftime('%Y-%m-%d %H:%M') if comment.created_at_jst else '日時不明' }}
+                        </div>
+                    </div>
+                    <div class="comment-body">
+                        {{ comment.content }}
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <div class="empty">
+            コメントがありません
+        </div>
         {% endif %}
-        {% endwith %} -->
+    </div>
 
-        <!-- 選択した投稿だけを表示(1件だけ) -->
-        <div class="post-card">
-            <!-- アイコン画像表示 -->
-            {% set target_user = post.author %}
-            {% set size = "small" %}
-            {% include "icon.html" %}
-            <div class="post-content">
-                <div class="post-header">
-                    <div class="post-user">
-                        {{ post.author.username }}
-                    </div>
-                    <div class="post-time">
-                        {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}
-                    </div>
-                    <div class="study-time">
-                        学習時間: {{ post.formatted_learning_time }}
-                    </div>
-                </div>
-                <div class="post-body">
-                    {{ post.content }}
-                </div>
-            <!-- 投稿削除機能 -->
-                <div class="post-action">
-                {% if post.user_id == user_id %}
-                <form action="/posts/{{ post.id }}/delete" method="post">
-                    <button class="post-button-delete" type="submit"
-                    onclick="return confirm('この投稿を削除しますか？');">削除</button>
-                </form>
-                {% endif %}
-                </div>
+    <!-- コメント投稿フォーム -->
+    <div class="new-comment">
+        <form class="new-comment-main" action="/posts/{{ post.id }}/comments" method="post">
+            <textarea name="content" placeholder="コメントを入力してください。"></textarea>
+            <div class="new-comment-footer">
+                <button class="comment-btn" type="submit">
+                    投稿する
+                </button>
             </div>
-        </div>
-
-        <!-- コメント一覧 -->
-        <div class="comments-section">
-            {% if comments and comments | length > 0 %}
-            <div class="comment-list">
-                {% for comment in comments %}
-                <div class="comment-card">
-                    <!-- Flask連携時使用　<img src="{{ url_for('static' , filename='icon/profile_icon.png') }}"> -->
-                    <div class="comment-content">
-                        <div class="comment-header">
-                            <div class="comment-user">
-                                {{ comment.author.username}}
-                            </div>
-                            <div class="comment-time">
-                                {{ comment.created_at_jst.strftime('%Y-%m-%d %H:%M') if comment.created_at_jst else '日時不明' }}
-                            </div>
-                        </div>
-                        <div class="comment-body">
-                            {{ comment.content }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="empty">
-                コメントがありません
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- コメント投稿フォーム -->
-        <div class="new-comment">
-            <form class="new-comment-main" action="/posts/{{ post.id }}/comments" method="post">
-                <textarea name="content" placeholder="コメントを入力してください。"></textarea>
-                <div class="new-comment-footer">
-                    <button class="comment-btn" type="submit">
-                        投稿する
-                    </button>
-                </div>
-            </form>
-        </div>
-    </main>
+        </form>
+    </div>
+</main>
 </body>
-</html>
+{% endblock %}
