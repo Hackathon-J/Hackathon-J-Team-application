@@ -1,3 +1,4 @@
+{% from "profile_macro.html" import profile_link %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -24,9 +25,7 @@
         <form class="post" action="{{ url_for('posts') }}" method="POST"><!-- app.pyのpostsルートにデータを送るためaction属性とmethod属性を追加byおーちゃん2/11-->
             <div class="post_header">
                 <!-- アイコン画像 -->
-                {% set target_user = current_user %}
-                {% set size = "small" %}
-                {% include "icon.html" %}
+                {{ profile_link(current_user, "small") }}
                  <!-- 学習時間記入欄 -->
                 <div class="studytime">
                     <label for="studytime">学習時間</label>

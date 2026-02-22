@@ -1,3 +1,4 @@
+{% from "profile_macro.html" import profile_link %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -33,12 +34,8 @@
         <div class="ranking-{{ loop.index }}">
                 <div class="rank">{{ loop.index }}位</div>
                 <div class="ranking-1-name">
-                    <a href="{{ url_for('others_profile', user_id=user.id) }}" class="profile-link">
-                        <!-- アイコン画像表示 -->
-                        {% set target_user = user %}
-                        {% set size = "small" %}
-                        {% include "icon.html" %}
-                    </a>
+                    <!-- アイコン画像表示 -->
+                    {{ profile_link(user, "small") }}    
                     {{ user.username }}
                 </div>
                 <div class="ranking-1-study-time">
@@ -63,9 +60,7 @@
             <a href="{{ url_for('post_detail', post_id=post.id) }}" class="post-card-link">  <!-- おーちゃんline26〜変更2/15-->
                 <div class="post-card">
                 <!-- アイコン画像表示 -->
-                    {% set target_user = post.author %}
-                    {% set size = "small" %}
-                    {% include "icon.html" %}
+                    {{ profile_link(post.author, "small") }}
                     <div class="post-content">
                         <div class="post-header">
                             <div class="post-user">

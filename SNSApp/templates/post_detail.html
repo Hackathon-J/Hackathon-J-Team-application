@@ -1,3 +1,4 @@
+{% from "profile_macro.html" import profile_link %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -41,9 +42,7 @@
         <!-- 選択した投稿だけを表示(1件だけ) -->
         <div class="post-card">
             <!-- アイコン画像表示 -->
-            {% set target_user = post.author %}
-            {% set size = "small" %}
-            {% include "icon.html" %}
+            {{ profile_link(current_user, "small") }}
             <div class="post-content">
                 <div class="post-header">
                     <div class="post-user">
@@ -77,7 +76,8 @@
             <div class="comment-list">
                 {% for comment in comments %}
                 <div class="comment-card">
-                    <!-- Flask連携時使用　<img src="{{ url_for('static' , filename='icon/profile_icon.png') }}"> -->
+                    <!-- アイコン画像表示 -->
+                    {{ profile_link(comment.author, "small") }}
                     <div class="comment-content">
                         <div class="comment-header">
                             <div class="comment-user">

@@ -35,14 +35,12 @@ login_manager.login_view = 'login'
 #セッション設定
 app.permanent_session_lifetime = timedelta(days=SESSION_DAYS)
 # SQLデータベースの指定
-# SQLiteを指定⇒MYSQLの指定が必要だと思うので変更
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     f"mysql+pymysql://{os.getenv('DB_USER')}:"
     f"{os.getenv('DB_PASSWORD')}@db:3306/"
     f"{os.getenv('DB_DATABASE')}"
 )
-# SQLAlchemyのイベント通知無効化
+#SQLAlchemyのイベント通知無効化
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #S3クライアントの追加
@@ -53,9 +51,9 @@ s3 = boto3.client(
     region_name=os.getenv("AWS_S3_REGION") 
                         )
 
-# コンテナを再起動するたびにセッションが無効かされるので別方法を取る。
-# app.config['SECRET_KEY'] = os.urandom(24)
-# SECRET_KEYを.envに作成する。 line30-35おーちゃん追加
+#コンテナを再起動するたびにセッションが無効かされるので別方法を取る。
+#app.config['SECRET_KEY'] = os.urandom(24)
+#SECRET_KEYを.envに作成する。
 load_dotenv()
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 if app.config['SECRET_KEY'] is None:
@@ -66,7 +64,7 @@ db = SQLAlchemy(app)
 def not_logged_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if current_user.is_authenticated: # flask_loginのcurrent_userを使用
+        if current_user.is_authenticated:
             return redirect(url_for('home'))
         return f(*args, **kwargs)
     return decorated_function
@@ -101,13 +99,12 @@ class BaseModel(db.Model):
 class User(UserMixin, BaseModel):
     __tablename__ = "users"
     
-    #ログインIDとして使う、おーちゃん2/18修正
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(120), nullable=False)
+    #ログインIDとして使う
     mailaddress = db.Column(db.String(120), unique=True, nullable=False)
+    username = db.Column(db.String(80), unique=False, nullable=False)
+    password_hash = db.Column(db.String(120), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     comments = db.relationship('Comment', backref='author', lazy=True)
-    #UserとProfileを1対1に結び付ける設定
     profile = db.relationship('Profile', backref='user', uselist=False)
     
     def __repr__(self):
@@ -133,13 +130,13 @@ class Post(BaseModel):
     __tablename__ = "posts"
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), nullable=False)#おーちゃん変更2/14
-    learning_time = db.Column(db.Integer) #追加byおーちゃん2/10
+    learning_time = db.Column(db.Integer)
     comments = db.relationship('Comment', backref='post', lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Post {self.id} by {self.user_id}>'
 
-    @property  # line77〜91追加byおーちゃん2/10
+    @property 
     def formatted_learning_time(self):
         if self.learning_time is None:
             return "未記録"
@@ -155,17 +152,18 @@ class Post(BaseModel):
         else:
             return "0分"
 
-# Profileモデル作成
+#Profileモデル作成
 class Profile(BaseModel):
     __tablename__ = "profiles"
-    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), unique=True, nullable=False)#おーちゃんunsigned=True追加2/18
+    user_id = db.Column(INTEGER(unsigned=True), db.ForeignKey('users.id'), unique=True, nullable=False)
+    content = db.Column(db.Text)
     icon_path = db.Column(db.String(255))
     header_path = db.Column(db.String(255))
 
     def __repr__(self):
         return f'<Profile id={self.id} user_id={self.user_id}>'
 
-#Commentモデル作成 おーちゃん2/18追加
+#Commentモデル作成
 class Comment(BaseModel):
     __tablename__ = "comments"
     content = db.Column(db.Text, nullable=False)
@@ -179,12 +177,12 @@ class Comment(BaseModel):
 def index():
     return redirect(url_for('home'))
 
-# ログイン画面の表示
+#ログイン画面の表示
 @app.route('/login')
 def login():
     return render_template('login.html')
 
-# ログイン処理
+#ログイン処理
 @app.route('/submit', methods=['POST'])
 def submit():
     # request.formは<form>タグから送られてきたデータを扱う。
@@ -243,20 +241,20 @@ def signup_post():
     login_user(new_user)
     return redirect(url_for('home'))
 
-# ログアウト処理
+#ログアウト処理
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
 
-# 投稿一覧画面表示
+#投稿一覧画面表示
 @app.route('/home')
 @login_required
 def home():
-    # 投稿一覧と合わせて投稿者情報も一緒に取得する
+    #投稿一覧と合わせて投稿者情報も一緒に取得する
     posts = Post.query.options(joinedload(Post.author)).order_by(Post.created_at.desc()).all()
-    # ランキングデータの追加　byおーちゃん2/18
+    #ランキングデータの追加　byおーちゃん2/18
     ranking_data = db.session.query(
         User, 
         func.sum(Post.learning_time).label('total_learning_time')
@@ -288,13 +286,13 @@ def posts():
             return redirect(url_for('home'))
     return render_template('posts.html')
 
-# 本人プロフィール画面表示
+#本人プロフィール画面表示
 @app.route('/profile')
 @login_required
 def profile():
     return render_template('profile_view.html', target_user=current_user)
 
-# 他人プロフィール画面表示
+#他人プロフィール画面表示
 @app.route('/others_profile/<int:user_id>')
 @login_required
 def others_profile(user_id):
