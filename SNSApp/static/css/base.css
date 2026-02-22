@@ -21,3 +21,8 @@ nav{
     align-items: center;
     gap: 30px;
 }
+
+/* ヘッダータイトルのフォントサイズを24pxに */
+.main-title{
+font-size: 24px;
+}
