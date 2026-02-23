@@ -18,6 +18,12 @@
     object-fit: cover;
 }
 
+.profile-body{
+    width: 100%;
+    white-space: pre-line; /* 投稿内容を改行して出力 */
+    overflow-wrap: anywhere;
+}
+
 .edit-button {
     padding: 12px;
     border: none;

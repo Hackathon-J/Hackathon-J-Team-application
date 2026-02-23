@@ -37,6 +37,10 @@ main{
 .post-body{
     background-color: white;
     margin: 5px;
+    padding: 0px 5px 0px;
+    overflow-wrap: anywhere;
+    text-align: left;
+    white-space: pre-line; /* 投稿内容を改行して出力 */
 }
 
 .post-action{
@@ -64,6 +68,10 @@ main{
 .comment-body{
     background-color: white;
     margin: 5px;
+    padding: 0px 5px 0px;
+    text-align: left;
+    white-space: pre-line; /* 投稿内容を改行して出力 */
+    overflow-wrap: anywhere;
 }
 
 .new-comment{
@@ -76,7 +84,7 @@ main{
 
 textarea{
     resize: none;
-    width: 95%;
+    width: 645px;
     height: 70px;
     font-size: 16px;
 }

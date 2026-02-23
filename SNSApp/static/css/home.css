@@ -132,6 +132,8 @@ main{
     background-color: white;
     margin: 5px;
     padding: 0px 5px 0px;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap; /* 投稿内容を改行して出力 */
 }
 
 .post-button{

@@ -40,9 +40,7 @@
                     学習時間: {{ post.formatted_learning_time }}
                 </div>
             </div>
-            <div class="post-body">
-                {{ post.content }}
-            </div>
+            <div class="post-body">{{ post.content }}</div>
         <!-- 投稿削除機能 -->
             <div class="post-action">
             {% if post.user_id == user_id %}
@@ -72,9 +70,7 @@
                             {{ comment.created_at_jst.strftime('%Y-%m-%d %H:%M') if comment.created_at_jst else '日時不明' }}
                         </div>
                     </div>
-                    <div class="comment-body">
-                        {{ comment.content }}
-                    </div>
+                    <div class="comment-body">{{ comment.content }}</div>
                 </div>
             </div>
             {% endfor %}
