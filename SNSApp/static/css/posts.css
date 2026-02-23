@@ -1,25 +1,4 @@
 
-body{
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    gap: 36px;
-    margin-top: 0px;
-}
-header{
-    display: flex;
-    background-color: rgb(23, 117, 194);
-    color: white;
-    justify-content: space-between;
-    padding: 10px;
-}
-nav{
-    display: flex;
-    justify-content: stretch;
-    align-items: center;
-    gap: 30px;
-}
-
 main{
     display: flex;
     flex-grow: 1;           /* flex要素の余白部分一杯使うための設定 */
