@@ -16,6 +16,7 @@
     height: 206px;
     border-radius: 50%;
     object-fit: cover;
+    margin-top: 50px;
 }
 
 .profile-body{

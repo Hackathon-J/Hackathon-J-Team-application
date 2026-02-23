@@ -17,9 +17,9 @@
         <h1 class="main-title">STEP RISE</h1>
         <!-- 右上にナビゲーション-->
         <nav>
-            <a href="{{ url_for('home') }}">ホーム</a>
-            <a href="{{ url_for('profile') }}">プロフィール</a>
-            <a href="{{ url_for('logout') }}">ログアウト</a>
+            <a class="transition-link" href="{{ url_for('home') }}"><img class="transition-home" src="{{ url_for('static' , filename='css/icon/home.png')}}"></a>
+            <a class="transition-link" href="{{ url_for('profile') }}"><img class="transition-profile" src="{{ url_for('static' , filename='css/icon/profile.png')}}"></a>
+            <a class="transition-link" href="{{ url_for('logout') }}"><img class="transition-logout" src="{{ url_for('static' , filename='css/icon/logout.png')}}"></a>
         </nav>
     </header>
     <main>

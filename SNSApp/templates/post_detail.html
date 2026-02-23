@@ -7,48 +7,36 @@
 
 {% block content %}
 <main>
-    <h2 class="page-title">
-        投稿詳細
-    </h2>
-    <!-- フラッシュメッセージ 
-    「コメント内容が空です。」ro「コメントの投稿が完了しました。」-->
-    <!--{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <div class="flash-messages">
-        {% for category, message in messages %}
-        <div class="flash flash-{{ category }}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% endwith %} -->
-
-    <!-- 選択した投稿だけを表示(1件だけ) -->
-    <div class="post-card">
-        <!-- アイコン画像表示 -->
-        {{ profile_link(post.author, current_user, "small") }}
-        <div class="post-content">
-            <div class="post-header">
-                <div class="post-user">
-                    {{ post.author.username }}
+    <div class="post-top">
+        <h1 class="page-title">
+            投稿詳細
+        </h1>
+        <!-- 選択した投稿だけを表示(1件だけ) -->
+        <div class="post-card">
+            <!-- アイコン画像表示 -->
+            {{ profile_link(post.author, current_user, "small") }}
+            <div class="post-content">
+                <div class="post-header">
+                    <div class="post-user">
+                        {{ post.author.username }}
+                    </div>
+                    <div class="post-time">
+                        {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}
+                    </div>
+                    <div class="study-time">
+                        学習時間: {{ post.formatted_learning_time }}
+                    </div>
                 </div>
-                <div class="post-time">
-                    {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}
+                <div class="post-body">{{ post.content }}</div>
+            <!-- 投稿削除機能 -->
+                <div class="post-action">
+                {% if post.user_id == user_id %}
+                <form action="/posts/{{ post.id }}/delete" method="post">
+                    <button class="post-button-delete" type="submit"
+                    onclick="return confirm('この投稿を削除しますか？');">削除</button>
+                </form>
+                {% endif %}
                 </div>
-                <div class="study-time">
-                    学習時間: {{ post.formatted_learning_time }}
-                </div>
-            </div>
-            <div class="post-body">{{ post.content }}</div>
-        <!-- 投稿削除機能 -->
-            <div class="post-action">
-            {% if post.user_id == user_id %}
-            <form action="/posts/{{ post.id }}/delete" method="post">
-                <button class="post-button-delete" type="submit"
-                onclick="return confirm('この投稿を削除しますか？');">削除</button>
-            </form>
-            {% endif %}
             </div>
         </div>
     </div>

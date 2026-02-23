@@ -6,8 +6,15 @@ main{
     gap: 12px;
 }
 
+.post-top{
+    position: sticky;
+    top: 85px;
+    background-color: white;
+}
+
 .page-title{
     margin: 0;
+    
 }
 
 .post-card{
@@ -80,6 +87,7 @@ main{
     background-color: #D9D9D9;
     border-radius: 20px;
     padding: 10px 0px 10px;
+    margin-top: 24px;
 }
 
 textarea{

@@ -20,9 +20,21 @@ header{
 /* ナビゲーションの設定。横並びにして、オブジェクト間で30pxの間隔をあける。 */
 nav{
     display: flex;
-    justify-content: stretch;
     align-items: center;
-    gap: 30px;
+    gap: 10px;
+}
+
+/* 画像サイズに合わせて個別に調整 */
+.transition-home{
+    width: 100px;
+}
+
+.transition-profile{
+    width: 160px;
+}
+
+.transition-logout{
+    width: 145px;
 }
 
 /* ヘッダータイトルのフォントサイズを24pxに */
