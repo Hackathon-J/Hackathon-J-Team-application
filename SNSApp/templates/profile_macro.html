@@ -1,7 +1,9 @@
 {% macro profile_link(user, current_user, size="small") %}
     {% if user.id == current_user.id %}
+    <a href="{{ url_for('others_profile', user_id=user.id) }}" class="profile-link">
         {% set target_user = user %}
         {% include "icon.html" %}
+    </a>
     {% else %}
         <a href="{{ url_for('others_profile', user_id=user.id) }}" class="profile-link">
             {% set target_user = user %}

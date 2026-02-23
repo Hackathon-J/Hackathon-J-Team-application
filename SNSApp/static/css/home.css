@@ -6,16 +6,28 @@ main{
     align-items: center;
 }
 
+/* ランキング部分を画面上部に固定 */
+.ranking{
+    background-color: white;
+    position: sticky;
+    top: 88px;
+    z-index: 30;
+}
+
+.ranking-title{
+    font-size: 30px;
+    text-align: center;
+    margin: 5px;
+}
+
 .ranking-card{
     display: flex;
+    justify-content: space-evenly;
     background-color: #add8e6;
     width: 680px;
     border-radius: 20px;
     padding: 10px;
-    margin: 10px 0px 20px;
-    position: sticky;
-    top: 100px;
-    z-index: 30;
+    margin: 5px 0px 10px;
 }
 /* 順位はまとめてCSS適用 */
 .rank{
@@ -53,6 +65,17 @@ main{
     gap: 5px;
 }
 
+.post-title{
+    width: 100%;
+    text-align: center;
+    font-size: 30px;
+    margin: 0;
+    position: sticky;
+    top: 286px;
+    z-index: 30;
+    background-color: white;
+}
+
 .post-card{
     display: flex;
     width: 680px;
@@ -71,7 +94,6 @@ main{
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 10px;
     border-radius: 20px;
     z-index: 10;
 }
@@ -81,7 +103,6 @@ main{
 }
 /* アイコンからプロフィールへ遷移できるようにリンクを作成 */
 .profile-link{
-    position: relative;
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -94,7 +115,7 @@ main{
     border-radius: 50%;
     object-fit: cover;
 }
-.profile-link:hover{
+.profile-img.small:hover{
     background-color: rgba(255,255,255,0.3);
 }
 
@@ -117,12 +138,12 @@ main{
     background-color: #0085EE;
     color: #ffff;
     font-size: 24px;
-    width: 680px;
+    width: 100%;
     text-align: center;
     border-radius: 20px;
     position:sticky;
     bottom: 60px;
-    padding: 10px;
+    padding: 10px 0px;
     text-decoration: none;
     margin-top: 60px;
     z-index: 30;
