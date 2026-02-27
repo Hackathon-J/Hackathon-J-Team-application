@@ -1,0 +1,36 @@
+/* 全体を中央に */
+.profile-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+
+/* 引用元のicon.html内にある、profile-img.largeクラスに対して機能させている */
+.profile-img.large {
+    width: 206px;
+    height: 206px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 50px;
+}
+
+.profile-body{
+    width: 100%;
+    white-space: pre-line; /* 投稿内容を改行して出力 */
+    overflow-wrap: anywhere;
+}
+
+.edit-button {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+

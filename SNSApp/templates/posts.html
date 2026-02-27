@@ -1,0 +1,37 @@
+<!-- base.htmlを継承 -->
+{% extends "base.html" %}
+<!-- ページごとに必要なcssを追加 -->
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/posts.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <!-- 投稿欄の作成　-->
+    <!-- 内容記入欄 -->
+    <form class="post" action="{{ url_for('posts') }}" method="POST"><!-- app.pyのpostsルートにデータを送るためaction属性とmethod属性を追加byおーちゃん2/11-->
+        <div class="post_header">
+            <!-- アイコン画像 -->
+            {{ profile_link(current_user, "small") }}
+            <!-- 学習時間記入欄 -->
+            <div class="studytime">
+                <label for="studytime">学習時間</label>
+                <div id="studytime">
+                    <input type="number" id="studytime_hour" name="studytime_hour" min="0" value="0"><!-- textをnumberに変更,min="0" value="0"追加byおーちゃん2/11-->
+                    <span>時間</span>
+                    <input type="number" id="studytime_minutes" name="studytime_minutes" min="0" value="0"><!-- textをnumberに変更,min="0" value="0"追加byおーちゃん2/11-->
+                    <span>分</span>
+                </div>
+            </div>
+        </div>
+        
+
+        <textarea id="post_body" name="post_body"  placeholder="今週の学習内容を記入してください" style="overflow-y: scroll;"></textarea>
+        <div id="input_post_button">
+            <input type="submit" value="送信">
+        </div>
+    </form>
+</main>
+
+</body>
+{% endblock %}

@@ -1,0 +1,43 @@
+
+main{
+    display: flex;
+    flex-grow: 1;           /* flex要素の余白部分一杯使うための設定 */
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.profile-img.small {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.post{
+    position: relative;     /* postクラスを親要素にする */
+    width: 680px;             /* 画面幅の680pxに設定 2/21だいちょん修正 */
+    padding: 10px;
+    background-color:rgb(168, 181, 194);
+}
+
+#input_post_button{
+    position: absolute;     /* 親要素を基準に自由に動ける設定 */
+    top: 50px;              /* トップから50pxの位置 */
+    right: 10px;            /* 右端から10pxの位置 */
+}
+
+/* 学習時間記入欄の時間要素の設定 */
+#studytime_hour{
+    width: 30px;
+}
+
+/* 学習時間記入欄の分要素の設定 */
+#studytime_minutes{
+    width: 30px;
+}
+
+#post_body{
+    height: 300px;      /* 記入欄の縦幅をたくさん確保 */
+    width: 100%;        /* 親の幅いっぱいに広げる */
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
+    <link rel="stylesheet" href="../static/css/login.css"> <!--Flask連携前確認用の為、この行確認後削除-->
+    <title>STEP RISE</title>
+</head>
+<body>
+    <header>
+        <!-- アプリ上部のヘッダーを表示 -->
+        <!-- いずれもaタグにしてリンクにする予定？ -->
+        <!--　左上にアプリ名 -->
+        <h3>STEP RISE</h3>
+    </header>
+    <main>
+        <form action="{{ url_for('signup_post') }}" method="POST">  <!--　signup→signup_postに変更byおーちゃん-->
+            <h3>新規登録</h3>
+            <div>
+                <label for="username">ユーザー名</label><br>
+                <input type="text" id="username" name="username">
+            </div>
+            <div>
+                <label for="mailaddress">メールアドレス</label><br>
+                <input type="email" id="mailaddress" name="mailaddress" required><!--requiredを追加byおーちゃん-->
+            </div>
+            <div>
+                <label for="password">パスワード</label><br>
+                <input type="password" id="password" name="password">
+            </div>
+             <div>
+                <label for="password">パスワード(確認用)</label><br>
+                <input type="password" id="password_confirmation" name="password_confirmation">
+            </div>
+            <div id="submitbutton">
+                <input type="submit" value="SIGN UP">
+            </div>
+        </form>
+        <a href="{{ url_for('login') }}">ログインはこちら</a>
+    </main>
+    
+</body>
+</html>

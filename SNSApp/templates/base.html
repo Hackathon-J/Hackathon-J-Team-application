@@ -1,0 +1,31 @@
+{% from "profile_macro.html" import profile_link %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <!-- ページごとのcssを適応させる -->
+    {% block page_css %}{% endblock %}
+    <title>STEP RISE</title>
+</head>
+<body>
+    <header>
+        <!-- アプリ上部のヘッダーを表示 -->
+        <!-- いずれもaタグにしてリンクにする予定？ -->
+        <!--　左上にアプリ名 -->
+        <h1 class="main-title">STEP RISE</h1>
+        <!-- 右上にナビゲーション-->
+        <nav>
+            <a class="transition-link" href="{{ url_for('home') }}"><img class="transition-home" src="{{ url_for('static' , filename='css/icon/home.png')}}"></a>
+            <a class="transition-link" href="{{ url_for('profile') }}"><img class="transition-profile" src="{{ url_for('static' , filename='css/icon/profile.png')}}"></a>
+            <a class="transition-link" href="{{ url_for('logout') }}"><img class="transition-logout" src="{{ url_for('static' , filename='css/icon/logout.png')}}"></a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+</body>
+</html>

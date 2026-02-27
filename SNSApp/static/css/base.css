@@ -1,0 +1,43 @@
+/* body全体を内容の量に関係なく、PCやスマホの画面いっぱいの高さにする。*/
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin-top: 0px;
+}
+/* 画面内のヘッダーの設定、横並びにして、背景は青、文字は白色、配置は両端に、10px余白 */
+header{
+    display: flex;
+    background-color: rgb(23, 117, 194);
+    color: white;
+    justify-content: space-between;
+    padding: 10px;
+    position: sticky; /* ヘッダーを固定しz-indexにて最前面へ */
+    top: 0;
+    z-index: 30;
+}
+
+/* ナビゲーションの設定。横並びにして、オブジェクト間で30pxの間隔をあける。 */
+nav{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 画像サイズに合わせて個別に調整 */
+.transition-home{
+    width: 100px;
+}
+
+.transition-profile{
+    width: 160px;
+}
+
+.transition-logout{
+    width: 145px;
+}
+
+/* ヘッダータイトルのフォントサイズを24pxに */
+.main-title{
+font-size: 24px;
+}

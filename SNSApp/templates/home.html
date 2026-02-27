@@ -1,0 +1,84 @@
+<!-- base.htmlを継承 -->
+{% extends "base.html" %}
+<!-- ページごとに必要なcssを追加 -->
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    
+    <!-- ランキングを表示 -->
+    <div class="ranking">
+        <h1 class="ranking-title">学習時間ランキング</h1>
+        <div class="ranking-card">
+        <!-- line26〜追加と変更 by おーちゃん2/17 -->
+        {% if ranking_data %} 
+        <!-- ranking_dataをループする -->
+        {% for rank_tuple in ranking_data %}
+        {% set user = rank_tuple[0] %} 
+        {% set total_time = rank_tuple[1] %} 
+        <div class="ranking-{{ loop.index }}">
+                <div class="rank">{{ loop.index }}位</div>
+                <div class="ranking-1-name">
+                    <!-- アイコン画像表示 -->
+                    {{ profile_link(user, current_user, "small") }}    
+                    {{ user.username }}
+                </div>
+                <div class="ranking-1-study-time">
+                    学習時間:
+                    {% set hours = total_time // 60 %} 
+                    {% set minutes = total_time % 60 %}
+                    {{ hours }}時間{{ minutes }}分 
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">
+                <p>まだランキングデータがありません。</p>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+
+    <!-- 投稿一覧を表示 -->
+    <h1 class="post-title">投稿一覧</h1>
+    {% if posts and posts | length > 0 %}
+    <div class="post-list">
+        {% for post in posts %}
+        <div class="post-card">
+            <!-- 投稿画面をクリック可能にする透明リンク -->
+            <a href="{{ url_for('post_detail', post_id=post.id) }}" class="post-detail-link"></a>
+            <!-- アイコン画像表示 -->
+            {{ profile_link(post.author, current_user, "small") }}
+            
+            <div class="post-content">
+                <div class="post-header">
+                    <div class="post-user">
+                        {{ post.author.username }}
+                    </div>
+                    <div class="post-time">
+                        {{ post.created_at_jst.strftime('%Y-%m-%d %H:%M') if post.created_at_jst else '日時不明' }}
+                    </div>
+                    <div class="study-time">
+                        学習時間: {{ post.formatted_learning_time }}
+                    </div>
+                </div>
+                <div class="post-body">{{ post.content }}</div>
+            </div>
+        </div>   
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+        <p>投稿がありません。</p>
+    </div>
+    {% endif %}
+    <!-- <form action="{{ url_for('posts') }}" method="GET">
+        <button class="post-button" type="submit">投稿を作成</button>  
+    </form>-->
+    <a href="{{ url_for('posts') }}" class="post-button">投稿を作成</a>
+</main>
+
+</body>
+{% endblock %}

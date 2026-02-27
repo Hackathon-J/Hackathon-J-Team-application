@@ -1,0 +1,30 @@
+<!-- base.htmlを継承 -->
+{% extends "base.html" %}
+<!-- ページごとに必要なcssを追加 -->
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile_view.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="profile-container">
+        <!-- アイコン画像 -->
+        {% set size = "large" %}
+        {% include "icon.html" %}
+        <!-- ユーザー名 -->
+        <div class="profile-user">
+            <h3>{{ target_user.username }}</h3>
+        </div>
+        <!-- 自己紹介 -->
+        <div class="profile-body" style="overflow-y: scroll;">{{ target_user.profile.content or "自己紹介はまだありません。" }}</div>
+        <!-- 本人だけ編集ボタンを表示 -->
+            {% if current_user.id == target_user.id %}
+            <form action="{{ url_for('profile_edit') }}">
+                <button type="submit" class="edit-button">プロフィール編集</button>
+            </form>
+            {% endif %}
+    </div>
+</main>
+
+</body>
+{% endblock %}

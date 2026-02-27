@@ -1,0 +1,113 @@
+
+main{
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+    gap: 12px;
+}
+
+.post-top{
+    position: sticky;
+    top: 85px;
+    background-color: white;
+}
+
+.page-title{
+    margin: 0;
+    
+}
+
+.post-card{
+    display: flex;
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    padding: 10px;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.profile-img.small {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.post-content{
+    width: 100%;
+}
+
+.post-header{
+    display: flex;
+    gap: 60px;
+}
+
+.post-body{
+    background-color: white;
+    margin: 5px;
+    padding: 0px 5px 0px;
+    overflow-wrap: anywhere;
+    text-align: left;
+    white-space: pre-line; /* 投稿内容を改行して出力 */
+}
+
+.post-action{
+    text-align: end;
+}
+
+.comment-card {
+    display: flex;
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    padding: 10px;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.comment-content{
+    width: 100%;
+}
+
+.comment-header{
+    display: flex;
+    gap: 60px;
+}
+
+.comment-body{
+    background-color: white;
+    margin: 5px;
+    padding: 0px 5px 0px;
+    text-align: left;
+    white-space: pre-line; /* 投稿内容を改行して出力 */
+    overflow-wrap: anywhere;
+}
+
+.new-comment{
+    position: sticky;
+    bottom: 24px;
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    padding: 10px 0px 10px;
+    margin-top: 24px;
+}
+
+textarea{
+    resize: none;
+    width: 645px;
+    height: 70px;
+    font-size: 16px;
+}
+
+.new-comment-footer{
+    text-align:right;
+    margin-right: 15px;
+}
+
+.comment-btn{
+    background-color: #0085EE;
+    color: #ffff;
+    border: none;
+}
+
+.comment-btn:hover{
+    opacity: 0.7;
+}
